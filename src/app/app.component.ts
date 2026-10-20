@@ -377,7 +377,7 @@ export class AppComponent{
  cancelRegistrationEdit():void{this.editingRegistrationId=null;this.editingRegistrationName=''}
  async saveRegistrationEdit(entry:CloudRegistration):Promise<void>{
    if(!this.canManageEvents||this.registrationEditBusy||this.editingRegistrationId!==entry.uid)return;
-   const name=this.editingRegistrationName.trim().replace(/\\s+/g,' ');
+   const name=this.editingRegistrationName.trim().replace(/\s+/g,' ');
    if(!name||name.length>30){this.registrationMessage='姓名須為 1 至 30 字';return}
    if(this.cloudRegistrations.some(item=>item.uid!==entry.uid&&item.name.toLocaleLowerCase()===name.toLocaleLowerCase())){this.registrationMessage='此姓名已報名';return}
    if(name===entry.name){this.cancelRegistrationEdit();return}
