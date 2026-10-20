@@ -36,9 +36,10 @@
 <p class="muted">填寫賽事資訊，產生專屬報名連結與 QR Code。</p>
 
 <div class="grid"><div><label for="cloud-event-title">比賽名稱</label><input id="cloud-event-title" [(ngModel)]="newEventTitle" maxlength="80" placeholder="例如：10/25 戰鬥陀螺公開賽"></div></div>
-<div class="grid event-details"><div><label for="event-date">比賽日期</label><input id="event-date" type="date" [(ngModel)]="newEventDate"></div><div><label for="event-location">比賽地點</label><input id="event-location" [(ngModel)]="newEventLocation" maxlength="100" placeholder="例如：台北市某活動中心"></div></div>
+<div class="grid event-details"><div><label for="event-date">比賽日期</label><input id="event-date" type="date" [min]="todayLocalDate" [(ngModel)]="newEventDate"></div><div><label for="event-location">比賽地點</label><input id="event-location" [(ngModel)]="newEventLocation" maxlength="100" placeholder="例如：台北市某活動中心"></div></div>
+<p class="error" *ngIf="newEventDateExpired">比賽日期不可早於今天，請重新選擇日期。</p>
 <div class="mode"><label>比賽模式</label><div class="tabs"><button type="button" [class.active]="newEventMode==='league'" (click)="newEventMode='league'">🏆 積分賽</button><button type="button" [class.active]="newEventMode==='knockout'" (click)="newEventMode='knockout'">⚔️ 淘汰賽</button></div></div>
-<div class="actions"><button type="button" (click)="createCloudEvent()" [disabled]="eventBusy || !newEventTitle.trim() || !newEventDate || !newEventLocation.trim()">{{eventBusy?'建立中…':'建立賽事與報名連結'}}</button></div>
+<div class="actions"><button type="button" (click)="createCloudEvent()" [disabled]="eventBusy || !newEventTitle.trim() || !newEventDate || !newEventLocation.trim() || newEventDateExpired">{{eventBusy?'建立中…':'建立賽事與報名連結'}}</button></div>
 <div *ngIf="newCreatedEventLink" class="new-event-success"><p><strong>賽事建立成功！</strong> 專屬報名連結：<a [href]="newCreatedEventLink" target="_blank" rel="noopener">{{newCreatedEventLink}}</a></p><img *ngIf="newCreatedEventQrCode" [src]="newCreatedEventQrCode" alt="新賽事報名 QR Code" width="260" height="260" style="max-width:100%;background:white;padding:10px;border-radius:12px"></div>
 <p class="muted">建立新賽事會產生新的報名連結；管理者請使用固定帳號登入；既有匿名賽事可在原瀏覽器建立 Email 帳號以保留原 UID。</p>
 </section>
