@@ -40,7 +40,7 @@ jobs:
             ${{ runner.os }}-angular-
 
       - name: Build Angular
-        run: npm run build -- --base-href /beyblade-tournament/
+        run: npm run build -- --base-href /beyblade-tournament-v2/
 
       - uses: actions/configure-pages@v5
 
