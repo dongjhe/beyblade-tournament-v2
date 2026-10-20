@@ -370,6 +370,30 @@ export class AppComponent{
    }catch(error){this.registrationMessage='匯出圖片失敗：'+String(error)}
    finally{this.exportBusy=false;this.cdr.detectChanges()}
  }
+ editingRegistrationId:string|null=null;
+ editingRegistrationName='';
+ registrationEditBusy=false;
+ beginRegistrationEdit(entry:CloudRegistration):void{if(!this.canManageEvents||this.registrationEditBusy)return;this.editingRegistrationId=entry.uid;this.editingRegistrationName=entry.name}
+ cancelRegistrationEdit():void{this.editingRegistrationId=null;this.editingRegistrationName=''}
+ async saveRegistrationEdit(entry:CloudRegistration):Promise<void>{
+   if(!this.canManageEvents||this.registrationEditBusy||this.editingRegistrationId!==entry.uid)return;
+   const name=this.editingRegistrationName.trim().replace(/\\s+/g,' ');
+   if(!name||name.length>30){this.registrationMessage='姓名須為 1 至 30 字';return}
+   if(this.cloudRegistrations.some(item=>item.uid!==entry.uid&&item.name.toLocaleLowerCase()===name.toLocaleLowerCase())){this.registrationMessage='此姓名已報名';return}
+   if(name===entry.name){this.cancelRegistrationEdit();return}
+   this.registrationEditBusy=true;
+   try{await this.cloudRegistration.renameRegistration(entry.uid,name);this.cancelRegistrationEdit();this.registrationMessage='已更新選手姓名：'+name}
+   catch(error){this.registrationMessage='修改失敗：'+String(error)}
+   finally{this.registrationEditBusy=false;this.cdr.detectChanges()}
+ }
+ async removeRegistration(entry:CloudRegistration):Promise<void>{
+   if(!this.canManageEvents||this.registrationEditBusy)return;
+   if(!confirm('確定刪除「'+entry.name+'」的報名紀錄？此操作無法復原。'))return;
+   this.registrationEditBusy=true;
+   try{await this.cloudRegistration.deleteRegistration(entry.uid);if(this.editingRegistrationId===entry.uid)this.cancelRegistrationEdit();this.registrationMessage='已刪除報名：'+entry.name}
+   catch(error){this.registrationMessage='刪除失敗：'+String(error)}
+   finally{this.registrationEditBusy=false;this.cdr.detectChanges()}
+ }
  get registeredNames():string[]{return this.cloudRegistrations.map(item=>item.name)}
  get myRegistrations():CloudRegistration[]{const uid=this.cloudRegistration.currentUserId;return uid?this.cloudRegistrations.filter(item=>item.ownerUid===uid):[]}
  setParticipantTab(tab:'mine'|'matches'|'ranking'):void{if(this.staffRole==='judge'&&tab==='mine')return;this.participantTab=tab}
