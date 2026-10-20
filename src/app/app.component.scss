@@ -719,3 +719,13 @@
 .roster-share-links .actions{display:flex;flex-wrap:wrap;align-items:center;gap:12px}
 .roster-open-link{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 18px;border:1px solid #bdcbc2;background:#fff;color:#203137!important;text-decoration:none;font-weight:800}
 @media(max-width:640px){.roster-share-panel{padding:16px}.roster-share-content{flex-direction:column;align-items:flex-start;gap:14px}.roster-share-links{width:100%}.roster-share-links .actions>*{flex:1}}
+
+/* Admin Firebase registration roster editing */
+:host .admin-registration-list{display:grid;gap:10px;margin:14px 0 22px}
+:host .admin-registration-row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 14px;border:1px solid #d9e2dd;background:#f8faf8;color:#1c2a30;min-width:0}
+:host .admin-registration-name{flex:1;min-width:0;overflow-wrap:anywhere;font-weight:700}
+:host .admin-registration-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+:host .admin-registration-actions button{width:auto;min-height:38px;padding:8px 14px;font-size:14px}
+:host .admin-registration-actions .admin-registration-delete{border-color:#e7b7b7;color:#a42a2a;background:#fff7f7}
+:host .admin-registration-input{flex:1;min-width:120px;max-width:440px}
+@media(max-width:600px){:host .admin-registration-row{flex-wrap:wrap;padding:12px}:host .admin-registration-name,:host .admin-registration-input{flex-basis:100%}:host .admin-registration-actions{width:100%}:host .admin-registration-actions button{flex:1}}
