@@ -232,6 +232,14 @@ export class TournamentRegistrationService {
       this.zone.run(() => onError(error instanceof Error ? error.message : String(error)));
     }
   }
+  async renameRegistration(registrationId:string,name:string):Promise<void>{
+    if(await this.getStaffRole()!=='admin')throw new Error('只有管理者可以編輯報名名單');
+    await updateDoc(doc(db,'events',this.eventId,'registrations',registrationId),{name});
+  }
+  async deleteRegistration(registrationId:string):Promise<void>{
+    if(await this.getStaffRole()!=='admin')throw new Error('只有管理者可以刪除報名名單');
+    await deleteDoc(doc(db,'events',this.eventId,'registrations',registrationId));
+  }
   async register(name: string): Promise<void> {
     const user = auth.currentUser;
     if (!user) throw new Error('匿名登入尚未完成');
