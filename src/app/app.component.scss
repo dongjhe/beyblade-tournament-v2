@@ -940,3 +940,11 @@
  :host .battle-overlay .battle-decision-row>button{height:46px!important;min-height:46px!important}
  :host .battle-overlay .next-battle-btn{min-height:46px!important}
 }
+
+/* Keep BOTH launch-failure controls accessible on portrait phones. */
+@media (orientation:portrait) and (max-width:760px){
+ :host .battle-overlay .battle-tools{grid-template-columns:minmax(0,1fr) minmax(0,1.35fr) minmax(0,1fr)!important;align-items:stretch!important}
+ :host .battle-overlay .battle-tools>.launch-fail-btn{display:flex!important;min-width:0!important;min-height:58px!important;padding:6px 2px!important;font-size:clamp(9px,2.5vw,12px)!important}
+ :host .battle-overlay .battle-reset-group{min-width:0!important}
+ :host .battle-overlay .next-battle-btn{font-size:clamp(11px,3vw,15px)!important;padding:6px 4px!important}
+}
