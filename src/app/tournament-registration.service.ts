@@ -266,7 +266,7 @@ export class TournamentRegistrationService {
       const event=await tx.get(eventRef);
       if(!event.exists()||event.data()['deleted']===true||event.data()['open']!==true)throw new Error('報名已截止');
       const capacity=Number(event.data()['capacity']??64);
-      if(event.data()['registrationCount']===undefined)throw new Error('舊賽事尚未設定人數上限，請聯絡主辦方');
+      if(event.data()['registrationCount']===undefined){tx.set(registrationRef,{name,uid:user.uid,createdAt:serverTimestamp()});return;}
       const count=Number(event.data()['registrationCount']);
       if(count>=capacity)throw new Error('報名已額滿');
       tx.set(registrationRef,{name,uid:user.uid,createdAt:serverTimestamp()});
