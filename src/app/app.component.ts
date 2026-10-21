@@ -42,7 +42,7 @@ export class AppComponent{
  }
  async refreshPublicEvents():Promise<void>{
    this.publicEventsLoading=true;this.publicEventsError='';
-   try{const events=await this.cloudRegistration.listPublicEvents();this.publicEvents=this.staffRole==='judge'?events.filter(e=>this.judgeAssignedEventIds.includes(e.id)):events}
+   try{const events=await this.cloudRegistration.listPublicEvents();this.publicEvents=(this.staffRole==='judge'?events.filter(e=>this.judgeAssignedEventIds.includes(e.id)):events).sort((a,b)=>a.date.localeCompare(b.date)||a.title.localeCompare(b.title,'zh-Hant'))}
    catch(error){this.publicEventsError='讀取賽事失敗：'+String(error)}
    finally{this.publicEventsLoading=false;this.cdr.detectChanges()}
  }
