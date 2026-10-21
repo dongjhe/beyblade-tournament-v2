@@ -138,6 +138,19 @@ export class TournamentRegistrationService {
     const { updateDoc } = await import('firebase/firestore');
     await updateDoc(ref,{open});
   }
+  async expandRegistrationCapacity(capacity:number):Promise<void>{
+    const user=auth.currentUser;
+    if(!user)throw new Error('請先登入管理者帳號');
+    const ref=doc(db,'events',this.eventId);
+    await runTransaction(db,async tx=>{
+      const snap=await tx.get(ref);
+      if(!snap.exists()||snap.data()['deleted']===true||snap.data()['ownerUid']!==user.uid)throw new Error('沒有管理此賽事的權限');
+      const current=Number(snap.data()['capacity']??64);
+      const registered=Number(snap.data()['registrationCount']??0);
+      if(!Number.isSafeInteger(capacity)||capacity<=current||capacity>64||capacity<registered)throw new Error('新名額必須大於目前上限，且最多 64 人');
+      tx.update(ref,{capacity,open:true});
+    });
+  }
   async deleteEvent(eventId:string):Promise<void>{
     const user=auth.currentUser;
     if(!user)throw new Error('請先完成匿名驗證');
