@@ -762,3 +762,10 @@
   :host .admin-registration-input{flex:1 1 auto;flex-basis:auto;min-width:0;width:0}
 }
 @media(max-width:360px){:host .admin-registration-actions{gap:4px}:host .admin-registration-actions button{padding:7px 8px;font-size:12px}}
+
+/* Registration sharing: stacked full-width actions on desktop and mobile */
+:host .roster-share-links{display:block;flex:1 1 0;min-width:0;width:100%}
+:host .roster-share-links .actions{display:flex;flex-direction:column;align-items:stretch;gap:12px;width:100%;margin-top:0}
+:host .roster-share-links .actions>button,
+:host .roster-share-links .actions>.roster-open-link{display:flex;flex:0 0 auto;box-sizing:border-box;width:100%;max-width:100%;min-width:0;min-height:48px;align-items:center;justify-content:center;padding:12px 14px;text-align:center;white-space:normal;word-break:keep-all;overflow-wrap:normal;line-height:1.4}
+@media(max-width:640px){:host .roster-share-links .actions>button,:host .roster-share-links .actions>.roster-open-link{flex:0 0 auto;width:100%}}
