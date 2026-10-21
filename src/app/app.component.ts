@@ -423,6 +423,11 @@ export class AppComponent{
    catch(error){this.registrationMessage='取消報名失敗：'+String(error)}
    finally{this.cancellationBusy=false;this.cdr.detectChanges()}
  }
+ myRegistrationPage=1;
+ readonly myRegistrationPageSize=10;
+ get myRegistrationPageCount():number{return Math.max(1,Math.ceil(this.myRegistrations.length/this.myRegistrationPageSize))}
+ get pagedMyRegistrations():CloudRegistration[]{const page=Math.min(this.myRegistrationPage,this.myRegistrationPageCount);return this.myRegistrations.slice((page-1)*this.myRegistrationPageSize,page*this.myRegistrationPageSize)}
+ setMyRegistrationPage(page:number):void{this.myRegistrationPage=Math.max(1,Math.min(page,this.myRegistrationPageCount))}
  get myRegistrations():CloudRegistration[]{const uid=this.cloudRegistration.currentUserId;return uid?this.cloudRegistrations.filter(item=>item.ownerUid===uid):[]}
  setParticipantTab(tab:'mine'|'matches'|'ranking'):void{if(this.staffRole==='judge'&&tab==='mine')return;this.participantTab=tab}
  private async connectRegistrations():Promise<void>{
