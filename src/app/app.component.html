@@ -70,7 +70,6 @@
   <div class="roster-share-content">
     <img *ngIf="eventQrCode" [src]="eventQrCode" alt="目前選取賽事的報名 QR Code" width="180" height="180" style="max-width:100%;background:#fff;padding:8px;border:1px solid #d7e3dc;border-radius:12px">
     <div class="roster-share-links">
-      <a [href]="eventLink" target="_blank" rel="noopener noreferrer">{{eventLink}}</a>
       <div class="actions">
         <button type="button" (click)="copyEventLink()">📋 複製報名連結</button>
         <a class="roster-open-link" [href]="eventLink" target="_blank" rel="noopener noreferrer">↗ 開啟報名表</a>
