@@ -1003,3 +1003,26 @@
  :host .battle-overlay .battle-reset-group{width:100%!important}
  :host .battle-overlay .battle-reset-group .next-battle-btn{width:100%!important;min-height:56px!important}
 }
+
+/* Scoring screen: score-first names, clear launch-failure labels, unobstructed toolbar. */
+:host .battle-overlay .battle-side,
+:host .battle-overlay .battle-side.right-side{grid-template-rows:repeat(3,minmax(62px,auto)) auto!important;align-content:start!important}
+:host .battle-overlay .score-player-name{display:block!important;margin-top:7px!important;font-size:clamp(13px,3vw,19px)!important;font-weight:900!important;letter-spacing:0!important;line-height:1.35!important;overflow-wrap:anywhere!important;color:#167e70!important}
+:host .battle-overlay .score-versus>div:last-child .score-player-name{color:#8051a8!important}
+:host .battle-overlay .battle-round,:host .battle-overlay .battle-sub{display:none!important}
+:host .battle-overlay .battle-head{position:relative!important;z-index:20!important}
+:host .battle-overlay .battle-center{position:relative!important;z-index:1!important}
+:host .battle-overlay .battle-side .launch-fail-btn,
+:host .battle-overlay .battle-tools>.launch-fail-btn{color:#176f61!important;background:#d9ece5!important;border:1px solid #9bcfc2!important;text-shadow:none!important;font-weight:900!important}
+:host .battle-overlay .battle-side.right-side .launch-fail-btn,
+:host .battle-overlay .battle-tools>.launch-fail-btn:last-child{color:#75459d!important;background:#eadff5!important;border:1px solid #c5a6df!important}
+:host .battle-overlay .battle-side .launch-fail-btn span,
+:host .battle-overlay .battle-tools>.launch-fail-btn span{color:inherit!important}
+:host .battle-overlay .fail-marks i{border-color:#7c9b94!important}
+:host .battle-overlay .battle-tools>.launch-fail-btn{display:flex!important}
+:host .battle-overlay .battle-close{display:none!important}
+@media (orientation:portrait) and (max-width:760px){
+ :host .battle-overlay .battle-side,:host .battle-overlay .battle-side.right-side{grid-template-rows:repeat(3,minmax(62px,auto)) auto!important}
+ :host .battle-overlay .score-player-name{font-size:15px!important;min-height:22px!important}
+ :host .battle-overlay .battle-tools>.launch-fail-btn{display:none!important}
+}
