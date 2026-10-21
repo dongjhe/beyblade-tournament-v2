@@ -26,10 +26,7 @@ service cloud.firestore {
         && request.resource.data.keys().hasOnly(['email','role','createdAt'])
         && request.resource.data.email == request.auth.token.email
         && request.resource.data.role == 'member'
-        && request.resource.data.createdAt == request.time
-          && (!get(/databases/$(database)/documents/events/$(eventId)).data.keys().hasAll(['capacity','registrationCount'])
-            || getAfter(/databases/$(database)/documents/events/$(eventId)).data.registrationCount
-              == get(/databases/$(database)/documents/events/$(eventId)).data.registrationCount + 1);
+        && request.resource.data.createdAt == request.time;
       // Administrators can approve/revoke judges, but cannot create other admins.
       allow update: if isAdmin()
         && staffId != request.auth.uid
@@ -160,7 +157,10 @@ service cloud.firestore {
           && request.resource.data.name is string
           && request.resource.data.name.size() >= 1
           && request.resource.data.name.size() <= 30
-          && request.resource.data.createdAt == request.time;
+          && request.resource.data.createdAt == request.time
+          && (!get(/databases/$(database)/documents/events/$(eventId)).data.keys().hasAll(['capacity','registrationCount'])
+            || getAfter(/databases/$(database)/documents/events/$(eventId)).data.registrationCount
+              == get(/databases/$(database)/documents/events/$(eventId)).data.registrationCount + 1);
         allow update: if isAdmin()
           && get(/databases/$(database)/documents/events/$(eventId)).data.ownerUid == request.auth.uid
           && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name'])
