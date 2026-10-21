@@ -783,3 +783,23 @@
   :host .roster-share-links .actions>button,
   :host .roster-share-links .actions>.roster-open-link{flex:0 0 auto;width:100%;max-width:100%;min-width:0;min-height:48px;height:auto;padding:12px 14px;white-space:nowrap;font-size:16px}
 }
+
+/* Participant registration: full-width form, no QR sidebar, compact own-registration pages */
+:host .public-signup-card .public-signup-grid{display:block!important;grid-template-columns:minmax(0,1fr)!important;width:100%}
+:host .public-signup-card .public-signup-form{width:100%!important;max-width:none!important;min-width:0;box-sizing:border-box}
+:host .public-signup-card .public-signup-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:12px}
+:host .public-signup-card .public-signup-heading h2{margin:0}
+:host .public-signup-card .public-signup-heading .public-copy{width:auto!important;min-width:180px;max-width:100%;min-height:44px;padding:10px 18px;white-space:nowrap;flex:0 0 auto}
+:host .public-signup-card .my-registration-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:16px}
+:host .public-signup-card .my-registration-grid .my-registration-item{display:flex;align-items:center;justify-content:space-between;gap:10px;min-width:0;min-height:58px;padding:10px 12px;box-sizing:border-box}
+:host .public-signup-card .my-registration-grid .my-registration-item>span{min-width:0;overflow-wrap:anywhere}
+:host .public-signup-card .my-registration-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap;flex:0 0 auto}
+:host .public-signup-card .my-registration-actions button{width:auto!important;min-height:36px;padding:7px 12px;white-space:nowrap}
+:host .public-signup-card .my-registration-list .roster-pagination{display:flex;justify-content:center;align-items:center;gap:12px;flex-wrap:wrap;margin-top:14px}
+:host .public-signup-card .my-registration-list .roster-pagination button{width:auto!important;min-height:40px;padding:8px 14px}
+@media(max-width:760px){
+  :host .public-signup-card .my-registration-grid{grid-template-columns:minmax(0,1fr)}
+  :host .public-signup-card .public-signup-heading{align-items:flex-start}
+  :host .public-signup-card .public-signup-heading .public-copy{width:100%!important;flex:1 1 100%}
+  :host .public-signup-card .my-registration-grid .my-registration-item{flex-wrap:wrap}
+}
