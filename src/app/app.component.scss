@@ -738,3 +738,8 @@
 :host .roster-pagination{grid-column:1/-1;display:flex;align-items:center;justify-content:center;gap:14px;padding:12px 0;flex-wrap:wrap}
 :host .roster-pagination button{width:auto;padding:8px 16px}
 @media(max-width:760px){:host .admin-registration-list{grid-template-columns:1fr}:host .admin-registration-row{flex-wrap:wrap}:host .admin-registration-actions{width:auto}}
+
+/* New tournament form: full-width notes below fee and capacity */
+:host .event-notes-field{margin-top:16px;width:100%;min-width:0}
+:host .event-notes-field label{display:block;margin-bottom:8px}
+:host .event-notes-field textarea{display:block;box-sizing:border-box;width:100%;max-width:100%;min-height:128px;resize:vertical;padding:14px 16px;font:inherit;line-height:1.6}
