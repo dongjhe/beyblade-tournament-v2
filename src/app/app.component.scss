@@ -979,3 +979,27 @@
 :host .battle-overlay .countdown-btn{background:#c5f43a!important;color:#24321d!important;border:0!important;box-shadow:none!important}
 :host .battle-overlay .camera-status{color:#54685b!important}
 :host .battle-overlay .arena-corner{display:none!important}
+
+/* Mobile scoring polish: compact header, no dark player-card gutters, full-width next match. */
+:host .battle-overlay .battle-head{height:42px!important;min-height:42px!important;padding:4px 12px!important}
+:host .battle-overlay .battle-head h2{font-size:18px!important;line-height:1.2!important;margin:0!important}
+:host .battle-overlay .battle-close{display:none!important}
+:host .battle-overlay .battle-side,
+:host .battle-overlay .battle-side.right-side{background:transparent!important;background-image:none!important;border:0!important;box-shadow:none!important;outline:0!important;padding:0!important;clip-path:none!important;border-radius:0!important}
+:host .battle-overlay .battle-side .battle-name,
+:host .battle-overlay .battle-side.right-side .battle-name{clip-path:none!important;border-radius:10px!important}
+:host .battle-overlay .battle-side .finish-btn,
+:host .battle-overlay .battle-side.right-side .finish-btn{clip-path:none!important;border-radius:10px!important}
+:host .battle-overlay .battle-tools{display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:8px!important;width:100%!important}
+:host .battle-overlay .battle-reset-group{display:block!important;width:100%!important;min-width:0!important;max-width:none!important}
+:host .battle-overlay .battle-reset-group .next-battle-btn{display:block!important;width:100%!important;max-width:none!important;min-width:0!important;box-sizing:border-box!important;padding:12px!important;min-height:50px!important;text-align:center!important;white-space:normal!important;clip-path:none!important}
+:host .battle-overlay .battle-tools>.launch-fail-btn{display:none!important}
+:host .battle-overlay .battle-side .launch-fail-btn{display:flex!important}
+:host .battle-overlay .battle-head button:not(.battle-close){background:#e2eee7!important;background-image:none!important;color:#214238!important;border:0!important;border-radius:8px!important;box-shadow:none!important;pointer-events:auto!important}
+@media (orientation:portrait) and (max-width:760px){
+ :host .battle-overlay .battle-head{height:38px!important;min-height:38px!important;padding:4px 10px!important}
+ :host .battle-overlay .battle-arena{min-height:calc(100dvh - 38px)!important}
+ :host .battle-overlay .battle-tools{display:block!important}
+ :host .battle-overlay .battle-reset-group{width:100%!important}
+ :host .battle-overlay .battle-reset-group .next-battle-btn{width:100%!important;min-height:56px!important}
+}
