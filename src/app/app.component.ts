@@ -220,6 +220,18 @@ export class AppComponent{
    }catch(error){this.registrationMessage='取消賽事失敗：'+String(error)}
    finally{this.eventBusy=false;this.cdr.detectChanges()}
  }
+ capacityEditorOpen=false;
+ extraCapacity=0;
+ capacityBusy=false;
+ showCapacityEditor():void{if(!this.eventOwner)return;this.extraCapacity=Math.min(64,this.eventCapacity+1);this.capacityEditorOpen=true}
+ async saveExtraCapacity():Promise<void>{
+   if(!this.eventOwner||this.capacityBusy)return;
+   if(!Number.isSafeInteger(this.extraCapacity)||this.extraCapacity<=this.eventCapacity||this.extraCapacity>64){this.registrationMessage='請輸入大於原上限且不超過 64 人的新名額';return}
+   this.capacityBusy=true;
+   try{await this.cloudRegistration.expandRegistrationCapacity(this.extraCapacity);this.eventCapacity=this.extraCapacity;this.registrationOpen=true;this.capacityEditorOpen=false;this.registrationMessage='已增加名額至 '+this.eventCapacity+' 人，報名表已重新開啟';await this.refreshCloudEvents()}
+   catch(error){this.registrationMessage='增加名額失敗：'+String(error)}
+   finally{this.capacityBusy=false;this.cdr.detectChanges()}
+ }
  async toggleCloudRegistration():Promise<void>{if(!this.eventOwner)return;try{await this.cloudRegistration.setRegistrationOpen(!this.registrationOpen);this.registrationOpen=!this.registrationOpen}catch(error){this.registrationMessage='更新報名狀態失敗：'+String(error)}}
 
  get selectedCloudEventId():string{return this.cloudEvents.some(event=>event.id===this.eventId)?this.eventId:''}
