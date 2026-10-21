@@ -77,6 +77,16 @@ service cloud.firestore {
         );
 
       allow update: if request.auth != null
+        && resource.data.ownerUid == request.auth.uid
+        && resource.data.get('deleted', false) == false
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['capacity','open'])
+        && request.resource.data.open == true
+        && request.resource.data.capacity is int
+        && request.resource.data.capacity > resource.data.capacity
+        && request.resource.data.capacity <= 64
+        && request.resource.data.capacity >= resource.data.registrationCount;
+
+      allow update: if request.auth != null
         && resource.data.get('deleted', false) == false
         && resource.data.keys().hasAll(['capacity','registrationCount'])
         && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['registrationCount'])
