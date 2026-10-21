@@ -948,3 +948,34 @@
  :host .battle-overlay .battle-reset-group{min-width:0!important}
  :host .battle-overlay .next-battle-btn{font-size:clamp(11px,3vw,15px)!important;padding:6px 4px!important}
 }
+
+/* Light-theme battle scoreboard: flat fullscreen layout without the outer rounded frame. */
+:host .battle-overlay{background:#f2f5f0!important;backdrop-filter:none!important;border:0!important;border-radius:0!important;box-shadow:none!important}
+:host .battle-overlay .battle-modal{background:#f2f5f0!important;color:#1e2a27!important;border:0!important;border-radius:0!important;box-shadow:none!important;outline:0!important}
+:host .battle-overlay .battle-arena{background:#f2f5f0!important;color:#1e2a27!important;border:0!important;border-radius:0!important;box-shadow:none!important}
+:host .battle-overlay .battle-head{background:#fff!important;color:#1e2a27!important;border:0!important;border-bottom:1px solid #dbe4da!important;box-shadow:none!important}
+:host .battle-overlay .battle-head button:not(.battle-close){background:#e8efe8!important;color:#25352d!important;border:0!important;box-shadow:none!important}
+:host .battle-overlay .battle-close{background:#e8efe8!important;color:#25352d!important;border:0!important;box-shadow:none!important}
+:host .battle-overlay .battle-head button:not(.battle-close):hover{background:#d9e9d1!important}
+:host .battle-overlay .battle-round{color:#1c2c24!important;text-shadow:none!important}
+:host .battle-overlay .battle-sub,:host .battle-overlay .score-versus small,:host .battle-overlay .fail-note{color:#64766c!important}
+:host .battle-overlay .score-versus>b{color:#60736a!important}
+:host .battle-overlay .battle-side .battle-name{background:#e4f6f0!important;color:#183b35!important;border:0!important;border-bottom:4px solid #48bba9!important;box-shadow:none!important}
+:host .battle-overlay .battle-side.right-side .battle-name{background:#f0e8fa!important;color:#493660!important;border:0!important;border-bottom:4px solid #ae86d5!important}
+:host .battle-overlay .battle-side .finish-btn{background:#e5f4ef!important;color:#23453e!important;border:0!important;border-radius:9px!important;box-shadow:none!important;text-shadow:none!important}
+:host .battle-overlay .battle-side.right-side .finish-btn{background:#f0eafa!important;color:#4d3a65!important;border:0!important;box-shadow:none!important}
+:host .battle-overlay .battle-side .finish-btn b{color:#23453e!important;text-shadow:none!important}
+:host .battle-overlay .battle-side.right-side .finish-btn b{color:#4d3a65!important}
+:host .battle-overlay .battle-side .finish-btn strong,:host .battle-overlay .battle-side .finish-btn.xtreme b{color:#168c7b!important}
+:host .battle-overlay .battle-side.right-side .finish-btn strong,:host .battle-overlay .battle-side.right-side .finish-btn.xtreme b{color:#8a54b7!important}
+:host .battle-overlay .score-versus>div:first-child .big-score{background:#d9f2e9!important;color:#167e70!important;border:2px solid #48bba9!important;box-shadow:none!important;text-shadow:none!important}
+:host .battle-overlay .score-versus>div:last-child .big-score{background:#eee2f8!important;color:#8051a8!important;border:2px solid #ae86d5!important;box-shadow:none!important;text-shadow:none!important}
+:host .battle-overlay .battle-side .launch-fail-btn{background:#d9ece5!important;color:#23453e!important;border:0!important;box-shadow:none!important}
+:host .battle-overlay .battle-side.right-side .launch-fail-btn{background:#eadff5!important;color:#4d3a65!important;border:0!important}
+:host .battle-overlay .battle-decision-row .draw-btn{background:#e1e7e2!important;color:#22312a!important}
+:host .battle-overlay .battle-decision-row .reset-btn{background:#e9dba8!important;color:#352b18!important}
+:host .battle-overlay .next-battle-btn{background:#c5f43a!important;color:#25351c!important;box-shadow:none!important}
+:host .battle-overlay .next-battle-btn:disabled{background:#dce4d8!important;color:#7b8778!important}
+:host .battle-overlay .countdown-btn{background:#c5f43a!important;color:#24321d!important;border:0!important;box-shadow:none!important}
+:host .battle-overlay .camera-status{color:#54685b!important}
+:host .battle-overlay .arena-corner{display:none!important}
