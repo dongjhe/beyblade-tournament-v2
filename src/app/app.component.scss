@@ -729,3 +729,12 @@
 :host .admin-registration-actions .admin-registration-delete{border-color:#e7b7b7;color:#a42a2a;background:#fff7f7}
 :host .admin-registration-input{flex:1;min-width:120px;max-width:440px}
 @media(max-width:600px){:host .admin-registration-row{flex-wrap:wrap;padding:12px}:host .admin-registration-name,:host .admin-registration-input{flex-basis:100%}:host .admin-registration-actions{width:100%}:host .admin-registration-actions button{flex:1}}
+
+/* Compact registration roster and pagination */
+:host .admin-registration-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+:host .admin-registration-row{padding:10px 12px;gap:8px;min-height:62px}
+:host .admin-registration-actions{flex-shrink:0;gap:6px}
+:host .admin-registration-actions button{min-height:34px;padding:6px 10px;font-size:13px}
+:host .roster-pagination{grid-column:1/-1;display:flex;align-items:center;justify-content:center;gap:14px;padding:12px 0;flex-wrap:wrap}
+:host .roster-pagination button{width:auto;padding:8px 16px}
+@media(max-width:760px){:host .admin-registration-list{grid-template-columns:1fr}:host .admin-registration-row{flex-wrap:wrap}:host .admin-registration-actions{width:auto}}
