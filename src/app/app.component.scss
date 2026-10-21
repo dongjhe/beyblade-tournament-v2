@@ -803,3 +803,38 @@
   :host .public-signup-card .public-signup-heading .public-copy{width:100%!important;flex:1 1 100%}
   :host .public-signup-card .my-registration-grid .my-registration-item{flex-wrap:wrap}
 }
+
+/* Battle scoring panel — align with SPIN LEAGUE charcoal, lime and ivory theme. */
+:host .battle-overlay{background:rgba(12,15,17,.88)}
+:host .battle-modal{background:#17191d;color:#f6f7f1;border:1px solid #50564e;box-shadow:0 24px 65px #0009}
+:host .battle-head{background:#22262a;border-bottom:1px solid #424942;color:#f6f7f1}
+:host .battle-arena{background:radial-gradient(circle at center,#303632 0%,#191d1f 75%);color:#f6f7f1}
+:host .battle-name{background:#f4f6f0;color:#172329;border-bottom-color:#c5f43a}
+:host .finish-btn{background:#292e30;color:#f5f6f1;border:1px solid #555d55;box-shadow:none}
+:host .finish-btn:hover:not(:disabled){background:#3a4335;border-color:#c5f43a}
+:host .finish-btn strong,:host .finish-btn.xtreme b{color:#c5f43a}
+:host .big-score{border-color:#c5f43a;color:#c5f43a;background:#252c29;box-shadow:none}
+:host .battle-round span{color:#c5f43a}
+:host .battle-sub,:host .fail-note{color:#aeb8b1}
+:host .draw-btn{background:#e9eee8;color:#172329}
+:host .reset-btn{background:#e0b44c;color:#192126;box-shadow:none}
+:host .reset-btn:hover{background:#f1c963;color:#192126}
+:host .next-battle-btn{background:#c5f43a;color:#18251d}
+:host .next-battle-btn:not(:disabled):hover{background:#d6ff63}
+:host .next-battle-btn:disabled{background:#3a4538;color:#aab6a5}
+:host .launch-fail-btn{background:#313735;border:1px solid #667069;color:#f3f6ee}
+:host .launch-fail-btn.has-fail{border-color:#e0b44c;background:#51432a}
+:host .battle-close{color:#f5f6f1}
+:host .arena-corner{border-color:#c5f43a;filter:none}
+:host .replay-panel{background:#242a2a;border-color:#697269}
+:host .replay-title{color:#c5f43a}
+/* Portrait devices: scroll inside the overlay instead of clipping the 100dvh arena. */
+@media (orientation:portrait) and (max-width:760px){
+ :host .battle-overlay{height:100dvh;max-height:100dvh;overflow-y:auto!important;overflow-x:hidden;align-items:flex-start;justify-content:flex-start;padding:0;overscroll-behavior-y:contain;touch-action:pan-y;-webkit-overflow-scrolling:touch}
+ :host .battle-modal{width:100%;height:auto!important;min-height:100dvh;max-height:none!important;overflow:visible!important;border-radius:0}
+ :host .battle-arena{height:auto!important;min-height:100dvh;overflow:visible!important;grid-template-rows:auto auto;align-items:start;padding-bottom:calc(28px + env(safe-area-inset-bottom))}
+ :host .battle-center{justify-content:flex-start}
+ :host .battle-side{grid-template-rows:auto repeat(3,minmax(58px,auto));align-content:start}
+ :host .battle-side .finish-btn{min-height:58px;height:auto}
+ :host .battle-head{position:sticky;top:0;z-index:30}
+}
