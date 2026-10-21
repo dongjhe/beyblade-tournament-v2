@@ -26,7 +26,10 @@ service cloud.firestore {
         && request.resource.data.keys().hasOnly(['email','role','createdAt'])
         && request.resource.data.email == request.auth.token.email
         && request.resource.data.role == 'member'
-        && request.resource.data.createdAt == request.time;
+        && request.resource.data.createdAt == request.time
+          && (!get(/databases/$(database)/documents/events/$(eventId)).data.keys().hasAll(['capacity','registrationCount'])
+            || getAfter(/databases/$(database)/documents/events/$(eventId)).data.registrationCount
+              == get(/databases/$(database)/documents/events/$(eventId)).data.registrationCount + 1);
       // Administrators can approve/revoke judges, but cannot create other admins.
       allow update: if isAdmin()
         && staffId != request.auth.uid
@@ -42,7 +45,7 @@ service cloud.firestore {
       allow read: if request.auth != null;
 
       allow create: if isAdmin()
-        && request.resource.data.keys().hasOnly(['title', 'mode', 'date', 'location', 'fee', 'notes', 'ownerUid', 'open', 'deleted', 'createdAt'])
+        && request.resource.data.keys().hasOnly(['title', 'mode', 'date', 'location', 'fee', 'notes', 'capacity', 'registrationCount', 'ownerUid', 'open', 'deleted', 'createdAt'])
         && request.resource.data.ownerUid == request.auth.uid
         && request.resource.data.title is string
         && request.resource.data.title.size() >= 1
@@ -58,6 +61,10 @@ service cloud.firestore {
         && request.resource.data.fee <= 1000000
         && request.resource.data.notes is string
         && request.resource.data.notes.size() <= 500
+        && request.resource.data.capacity is int
+        && request.resource.data.capacity >= 2
+        && request.resource.data.capacity <= 64
+        && request.resource.data.registrationCount == 0
         && request.resource.data.deleted == false
         && request.resource.data.open == true
         && request.resource.data.createdAt == request.time;
@@ -71,6 +78,18 @@ service cloud.firestore {
           ||
           (resource.data.get('deleted', false) == false && request.resource.data.deleted == true && request.resource.data.open == false)
         );
+
+      allow update: if request.auth != null
+        && resource.data.get('deleted', false) == false
+        && resource.data.keys().hasAll(['capacity','registrationCount'])
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['registrationCount'])
+        && request.resource.data.registrationCount is int
+        && request.resource.data.registrationCount >= 0
+        && request.resource.data.registrationCount <= resource.data.capacity
+        && (request.resource.data.registrationCount == resource.data.registrationCount + 1
+          || request.resource.data.registrationCount == resource.data.registrationCount - 1)
+        && (request.resource.data.registrationCount < resource.data.registrationCount
+          || resource.data.open == true);
 
       allow delete: if false;
 
@@ -153,7 +172,10 @@ service cloud.firestore {
           || (request.auth != null
           && resource.data.uid == request.auth.uid
           && get(/databases/$(database)/documents/events/$(eventId)).data.open == true
-          && get(/databases/$(database)/documents/events/$(eventId)).data.get('deleted', false) == false);
+          && get(/databases/$(database)/documents/events/$(eventId)).data.get('deleted', false) == false)
+          && (!get(/databases/$(database)/documents/events/$(eventId)).data.keys().hasAll(['capacity','registrationCount'])
+            || getAfter(/databases/$(database)/documents/events/$(eventId)).data.registrationCount
+              == get(/databases/$(database)/documents/events/$(eventId)).data.registrationCount - 1);
       }
     }
 
