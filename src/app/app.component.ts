@@ -11,7 +11,7 @@ interface Match{id:number;round:number;a:string|null;b:string|null;sa:number|nul
 export class AppComponent{
  @ViewChild('cameraPreview') cameraPreview?:ElementRef<HTMLVideoElement>;
  title='戰鬥陀螺挑戰賽';count=5;mode:Mode='league';knockoutView:KnockoutView='matches';names:string[]=[];players:string[]=[];matches:Match[]=[];started=false;error='';battleMatch:Match|null=null;battleRound=1;launchFails={a:0,b:0};countdownPlaying=false;recording=false;recordingPaused=false;recordingModeOpen=false;cameraReady=false;recordingUrl='';cameraError='';battleInfoOpen=false;private recordingOverlay?:HTMLElement;private toolbarGuard=document.addEventListener('click',event=>{const target=event.target as HTMLElement;if(target.closest('.toolbar-countdown')){event.preventDefault();event.stopImmediatePropagation();this.zone.run(()=>this.recording?this.stopRecording():this.openRecordingMode())}else if(target.closest('.video-pause-btn')){event.preventDefault();event.stopImmediatePropagation();this.zone.run(()=>this.showBattleInfoDialog())}},true);private countdownAudio?:HTMLAudioElement;private cameraStream?:MediaStream;private mediaRecorder?:MediaRecorder;private recordedChunks:Blob[]=[];private readonly storageKey='beybladeTournamentAngularV1';
- constructor(private zone:NgZone,private cdr:ChangeDetectorRef,private cloudRegistration:TournamentRegistrationService){this.cloudRegistration.onAuthChanged(user=>{this.zone.run(()=>{this.staffEmail=user?.isAnonymous?'':user?.email??'';this.staffSignedIn=!!user&&!user.isAnonymous;void this.refreshStaffRole()})});this.resizeNames();this.restore();void this.initializeRegistrationEvent();window.addEventListener('battle-recording-toggle',()=>this.zone.run(()=>this.recording?this.stopRecording():this.openRecordingMode()));window.addEventListener('battle-info-toggle',()=>this.zone.run(()=>this.showBattleInfoDialog()));document.addEventListener('click',event=>{const target=event.target as HTMLElement;if(target.closest('.toolbar-countdown')&&this.recording){event.preventDefault();event.stopImmediatePropagation();this.zone.run(()=>this.stopRecording())}if(target.closest('.video-pause-btn')){event.preventDefault();event.stopImmediatePropagation();this.zone.run(()=>this.showBattleInfoDialog())}},true)} newEventTitle='';newEventDate='';newEventLocation='';newEventFee=0;newEventNotes='';newEventMode:Mode='league';newCreatedEventLink='';newCreatedEventQrCode='';
+ constructor(private zone:NgZone,private cdr:ChangeDetectorRef,private cloudRegistration:TournamentRegistrationService){this.cloudRegistration.onAuthChanged(user=>{this.zone.run(()=>{this.staffEmail=user?.isAnonymous?'':user?.email??'';this.staffSignedIn=!!user&&!user.isAnonymous;void this.refreshStaffRole()})});this.resizeNames();this.restore();void this.initializeRegistrationEvent();window.addEventListener('battle-recording-toggle',()=>this.zone.run(()=>this.recording?this.stopRecording():this.openRecordingMode()));window.addEventListener('battle-info-toggle',()=>this.zone.run(()=>this.showBattleInfoDialog()));document.addEventListener('click',event=>{const target=event.target as HTMLElement;if(target.closest('.toolbar-countdown')&&this.recording){event.preventDefault();event.stopImmediatePropagation();this.zone.run(()=>this.stopRecording())}if(target.closest('.video-pause-btn')){event.preventDefault();event.stopImmediatePropagation();this.zone.run(()=>this.showBattleInfoDialog())}},true)} newEventTitle='';newEventDate='';newEventLocation='';newEventFee=0;newEventNotes='';newEventCapacity=32;newEventMode:Mode='league';newCreatedEventLink='';newCreatedEventQrCode='';
  organizerTab:'schedule'|'roster'|'forms'|'history'|'accounts'='schedule';exportBusy=false;
  sitePage:'home'|'events'|'login'|'member'|'admin'|'judge'='home';
  publicEvents:CloudEvent[]=[];publicEventsLoading=false;publicEventsError='';
@@ -118,12 +118,12 @@ export class AppComponent{
 
  registrationName='';registrationMessage='';registrationOpen=true;registrationReady=false;registrationBusy=false;
  cloudRegistrations:CloudRegistration[]=[];
- eventDate='';eventLocation='';eventFee=0;eventNotes='';eventId='main';eventLink='';eventQrCode='';eventOwner=false;participantView=false;publicSchedule: {mode:Mode;players:string[];matches:Match[]}|null=null;publicScheduleError='';scheduleSyncState:'idle'|'syncing'|'success'|'error'='idle';private schedulePending=false;private scheduleRunning=false;participantTab:'mine'|'matches'|'ranking'='mine';onlyMyMatches=false;eventBusy=false;cloudEvents:CloudEvent[]=[];eventSelectBusy=false;
+ eventDate='';eventLocation='';eventFee=0;eventNotes='';eventCapacity=64;eventId='main';eventLink='';eventQrCode='';eventOwner=false;participantView=false;publicSchedule: {mode:Mode;players:string[];matches:Match[]}|null=null;publicScheduleError='';scheduleSyncState:'idle'|'syncing'|'success'|'error'='idle';private schedulePending=false;private scheduleRunning=false;participantTab:'mine'|'matches'|'ranking'='mine';onlyMyMatches=false;eventBusy=false;cloudEvents:CloudEvent[]=[];eventSelectBusy=false;
  private async initializeRegistrationEvent():Promise<void>{
  await this.cloudRegistration.waitForAuth();
  const id=new URLSearchParams(location.search).get('event');this.participantView=!!id;
  if(id){this.started=false;this.matches=[];this.players=[];}
- if(id){try{await this.cloudRegistration.useEvent(id);const event=await this.cloudRegistration.loadEvent(id);this.eventId=id;this.title=event.title;this.mode=event.mode;this.registrationOpen=event.open;this.eventDate=event.date;this.eventLocation=event.location;this.eventFee=event.fee;this.eventNotes=event.notes;this.eventOwner=event.ownerUid===this.cloudRegistration.currentUserId;this.eventLink=location.origin+location.pathname+'?event='+encodeURIComponent(id);await this.updateEventQr()}
+ if(id){try{await this.cloudRegistration.useEvent(id);const event=await this.cloudRegistration.loadEvent(id);this.eventId=id;this.title=event.title;this.mode=event.mode;this.registrationOpen=event.open;this.eventDate=event.date;this.eventLocation=event.location;this.eventFee=event.fee;this.eventNotes=event.notes;this.eventCapacity=event.capacity;this.eventOwner=event.ownerUid===this.cloudRegistration.currentUserId;this.eventLink=location.origin+location.pathname+'?event='+encodeURIComponent(id);await this.updateEventQr()}
  catch(error){this.registrationMessage='賽事載入失敗：'+String(error);return}}
  if(!this.participantView && id)await this.restoreSelectedEventSchedule(id);
  await this.connectRegistrations();
@@ -179,7 +179,7 @@ export class AppComponent{
    try{
      const event=await this.cloudRegistration.loadEvent(id);
      await this.cloudRegistration.useEvent(id);
-     this.eventId=id;this.title=event.title;this.mode=event.mode;this.registrationOpen=event.open;this.eventDate=event.date;this.eventLocation=event.location;this.eventFee=event.fee;this.eventNotes=event.notes;
+     this.eventId=id;this.title=event.title;this.mode=event.mode;this.registrationOpen=event.open;this.eventDate=event.date;this.eventLocation=event.location;this.eventFee=event.fee;this.eventNotes=event.notes;this.eventCapacity=event.capacity;
      this.eventOwner=event.ownerUid===this.cloudRegistration.currentUserId;
      this.eventLink=location.origin+location.pathname+'?event='+encodeURIComponent(id);
      this.cloudRegistrations=[];this.registrationReady=false;this.names=Array.from({length:this.count},()=> '');
@@ -191,8 +191,8 @@ export class AppComponent{
  get todayLocalDate():string{const now=new Date();return now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0')}
  get newEventDateExpired():boolean{return !!this.newEventDate && this.newEventDate < this.todayLocalDate}
  async createCloudEvent():Promise<void>{
- if(!this.canManageEvents){this.registrationMessage='只有管理者可以建立賽事';return}if(this.eventBusy)return;const name=this.newEventTitle.trim();if(!name||name.length>80){this.registrationMessage='賽事名稱須為 1 至 80 字';return}if(!/^\d{4}-\d{2}-\d{2}$/.test(this.newEventDate)||!this.newEventLocation.trim()||this.newEventLocation.trim().length>100){this.registrationMessage='請填寫比賽日期與地點（地點最多 100 字）';return}if(this.newEventDateExpired){this.registrationMessage='比賽日期不可早於今天，請選擇今天或未來日期';return}if(!Number.isSafeInteger(this.newEventFee)||this.newEventFee<0||this.newEventFee>1000000||this.newEventNotes.length>500){this.registrationMessage='報名費須為 0 至 1000000 元整數，備註最多 500 字';return}
- this.persistCurrentEventSchedule();this.eventBusy=true;try{const id=await this.cloudRegistration.createEvent(name,this.newEventMode,this.newEventDate,this.newEventLocation.trim(),this.newEventFee,this.newEventNotes.trim());await this.cloudRegistration.useEvent(id);this.eventId=id;this.title=name;this.mode=this.newEventMode;this.eventDate=this.newEventDate;this.eventLocation=this.newEventLocation;this.eventFee=this.newEventFee;this.eventNotes=this.newEventNotes.trim();this.started=false;this.matches=[];this.players=[];this.eventOwner=true;this.registrationOpen=true;this.registrationReady=false;this.eventLink=location.origin+location.pathname+'?event='+encodeURIComponent(id);this.cloudRegistrations=[];this.names=Array.from({length:this.count},()=> '');await this.connectRegistrations();await this.refreshCloudEvents();await this.updateEventQr();this.newCreatedEventLink=this.eventLink;this.newCreatedEventQrCode=this.eventQrCode;this.newEventTitle='';this.newEventDate='';this.newEventLocation='';this.newEventFee=0;this.newEventNotes='';this.newEventMode='league';this.registrationMessage='賽事建立成功'}
+ if(!this.canManageEvents){this.registrationMessage='只有管理者可以建立賽事';return}if(this.eventBusy)return;const name=this.newEventTitle.trim();if(!name||name.length>80){this.registrationMessage='賽事名稱須為 1 至 80 字';return}if(!/^\d{4}-\d{2}-\d{2}$/.test(this.newEventDate)||!this.newEventLocation.trim()||this.newEventLocation.trim().length>100){this.registrationMessage='請填寫比賽日期與地點（地點最多 100 字）';return}if(this.newEventDateExpired){this.registrationMessage='比賽日期不可早於今天，請選擇今天或未來日期';return}if(!Number.isSafeInteger(this.newEventFee)||this.newEventFee<0||this.newEventFee>1000000||this.newEventNotes.length>500||!Number.isSafeInteger(this.newEventCapacity)||this.newEventCapacity<2||this.newEventCapacity>64){this.registrationMessage='報名費須為 0 至 1000000 元整數，備註最多 500 字';return}
+ this.persistCurrentEventSchedule();this.eventBusy=true;try{const id=await this.cloudRegistration.createEvent(name,this.newEventMode,this.newEventDate,this.newEventLocation.trim(),this.newEventFee,this.newEventNotes.trim(),this.newEventCapacity);await this.cloudRegistration.useEvent(id);this.eventId=id;this.title=name;this.mode=this.newEventMode;this.eventDate=this.newEventDate;this.eventLocation=this.newEventLocation;this.eventFee=this.newEventFee;this.eventNotes=this.newEventNotes.trim();this.eventCapacity=this.newEventCapacity;this.started=false;this.matches=[];this.players=[];this.eventOwner=true;this.registrationOpen=true;this.registrationReady=false;this.eventLink=location.origin+location.pathname+'?event='+encodeURIComponent(id);this.cloudRegistrations=[];this.names=Array.from({length:this.count},()=> '');await this.connectRegistrations();await this.refreshCloudEvents();await this.updateEventQr();this.newCreatedEventLink=this.eventLink;this.newCreatedEventQrCode=this.eventQrCode;this.newEventTitle='';this.newEventDate='';this.newEventLocation='';this.newEventFee=0;this.newEventNotes='';this.newEventCapacity=32;this.newEventMode='league';this.registrationMessage='賽事建立成功'}
  catch(error){this.registrationMessage='建立賽事失敗：'+String(error)}finally{this.eventBusy=false;this.cdr.detectChanges()}
  }
  async deleteCloudEvent():Promise<void>{
@@ -396,6 +396,11 @@ export class AppComponent{
    catch(error){this.registrationMessage='刪除失敗：'+String(error)}
    finally{this.registrationEditBusy=false;this.cdr.detectChanges()}
  }
+ rosterPage=1;rosterPageSize=10;
+ get rosterPageCount():number{return Math.max(1,Math.ceil(this.cloudRegistrations.length/this.rosterPageSize))}
+ get pagedRegistrations():CloudRegistration[]{const page=Math.min(this.rosterPage,this.rosterPageCount);return this.cloudRegistrations.slice((page-1)*this.rosterPageSize,page*this.rosterPageSize)}
+ setRosterPage(page:number):void{this.rosterPage=Math.max(1,Math.min(page,this.rosterPageCount));this.cancelRegistrationEdit()}
+ get registrationFull():boolean{return this.registeredNames.length>=this.eventCapacity}
  get registeredNames():string[]{return this.cloudRegistrations.map(item=>item.name)}
  cancellationBusy=false;
  async cancelOwnRegistration(entry:CloudRegistration):Promise<void>{
@@ -410,7 +415,7 @@ export class AppComponent{
  setParticipantTab(tab:'mine'|'matches'|'ranking'):void{if(this.staffRole==='judge'&&tab==='mine')return;this.participantTab=tab}
  private async connectRegistrations():Promise<void>{
    await this.cloudRegistration.connect(names=>{
-     this.cloudRegistrations=names;this.registrationReady=true;
+     this.cloudRegistrations=names;this.rosterPage=Math.min(this.rosterPage,this.rosterPageCount);this.registrationReady=true;
      this.cdr.detectChanges();
    },message=>{this.registrationReady=false;this.registrationMessage='雲端連線失敗：'+message;this.cdr.detectChanges()});
  }
@@ -422,7 +427,7 @@ export class AppComponent{
    if(!this.registrationOpen||this.started){this.registrationMessage='本機報名畫面已關閉';return}
    if(!name||name.length>30){this.registrationMessage='請輸入 1 至 30 字的姓名';return}
    if(this.registeredNames.some(n=>n.toLocaleLowerCase()===name.toLocaleLowerCase())){this.registrationMessage='此姓名已報名';return}
-   if(this.registeredNames.length>=64){this.registrationMessage='報名已達 64 人上限';return}
+   if(this.registrationFull){this.registrationMessage='報名已額滿（上限 '+this.eventCapacity+' 人）';return}
    this.registrationBusy=true;
    try{
      await this.cloudRegistration.register(name);
