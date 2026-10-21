@@ -743,3 +743,11 @@
 :host .event-notes-field{margin-top:16px;width:100%;min-width:0}
 :host .event-notes-field label{display:block;margin-bottom:8px}
 :host .event-notes-field textarea{display:block;box-sizing:border-box;width:100%;max-width:100%;min-height:128px;resize:vertical;padding:14px 16px;font:inherit;line-height:1.6}
+
+/* Reopen full registration by adding extra slots */
+:host .capacity-editor{margin:14px 0 8px;padding:16px;border:1px solid #d6e2da;background:#f7faf7;color:#203137}
+:host .capacity-editor label{display:block;margin-bottom:10px;font-weight:700}
+:host .capacity-editor-actions{display:flex;align-items:center;flex-wrap:wrap;gap:10px}
+:host .capacity-editor-actions input{width:140px;max-width:100%;min-width:100px}
+:host .capacity-editor-actions button{width:auto;min-height:42px;padding:10px 14px}
+@media(max-width:600px){:host .capacity-editor-actions input{flex:1}:host .capacity-editor-actions button{flex:1}}
