@@ -751,3 +751,14 @@
 :host .capacity-editor-actions input{width:140px;max-width:100%;min-width:100px}
 :host .capacity-editor-actions button{width:auto;min-height:42px;padding:10px 14px}
 @media(max-width:600px){:host .capacity-editor-actions input{flex:1}:host .capacity-editor-actions button{flex:1}}
+
+/* Mobile roster: keep edit/delete buttons aligned to the right on one line */
+@media(max-width:760px){
+  :host .admin-registration-list{grid-template-columns:minmax(0,1fr)}
+  :host .admin-registration-row{display:flex;flex-direction:row;flex-wrap:nowrap;align-items:center;justify-content:space-between;gap:10px;min-width:0;padding:12px}
+  :host .admin-registration-name{flex:1 1 auto;flex-basis:auto;min-width:0;overflow-wrap:anywhere}
+  :host .admin-registration-actions{display:flex;flex:0 0 auto;width:auto;min-width:0;flex-wrap:nowrap;align-items:center;justify-content:flex-end;gap:6px;margin-left:auto}
+  :host .admin-registration-actions button{display:inline-flex;flex:0 0 auto;width:auto;min-width:0;min-height:38px;padding:7px 10px;align-items:center;justify-content:center;white-space:nowrap;word-break:keep-all;font-size:13px;line-height:1.2}
+  :host .admin-registration-input{flex:1 1 auto;flex-basis:auto;min-width:0;width:0}
+}
+@media(max-width:360px){:host .admin-registration-actions{gap:4px}:host .admin-registration-actions button{padding:7px 8px;font-size:12px}}
