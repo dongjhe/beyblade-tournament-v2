@@ -118,7 +118,7 @@ export class AppComponent{
 
  registrationName='';registrationMessage='';registrationOpen=true;registrationReady=false;registrationBusy=false;
  cloudRegistrations:CloudRegistration[]=[];
- eventDate='';eventLocation='';eventFee=0;eventNotes='';eventCapacity=64;eventId='main';eventLink='';eventQrCode='';eventOwner=false;participantView=false;publicSchedule: {mode:Mode;players:string[];matches:Match[]}|null=null;publicScheduleError='';scheduleSyncState:'idle'|'syncing'|'success'|'error'='idle';private schedulePending=false;private scheduleRunning=false;participantTab:'mine'|'matches'|'ranking'='mine';onlyMyMatches=false;eventBusy=false;cloudEvents:CloudEvent[]=[];eventSelectBusy=false;
+ eventDate='';eventLocation='';eventFee=0;eventNotes='';eventCapacity=64;eventId='main';eventLink='';eventQrCode='';eventOwner=false;participantView=new URLSearchParams(location.search).has('event');publicSchedule: {mode:Mode;players:string[];matches:Match[]}|null=null;publicScheduleError='';scheduleSyncState:'idle'|'syncing'|'success'|'error'='idle';private schedulePending=false;private scheduleRunning=false;participantTab:'mine'|'matches'|'ranking'='mine';onlyMyMatches=false;eventBusy=false;cloudEvents:CloudEvent[]=[];eventSelectBusy=false;
  private async initializeRegistrationEvent():Promise<void>{
  await this.cloudRegistration.waitForAuth();
  const id=new URLSearchParams(location.search).get('event');this.participantView=!!id;
