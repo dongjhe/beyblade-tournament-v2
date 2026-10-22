@@ -58,7 +58,7 @@ export class AppComponent{
    finally{this.memberHistoryLoading=false;this.cdr.detectChanges()}
  }
  openPublicEvent(id:string):void{if(this.staffRole==='judge'&&!this.judgeAssignedEventIds.includes(id))return;location.assign(location.pathname+'?event='+encodeURIComponent(id))}
- staffRoleReady=false;authEmail='';authPassword='';authBusy=false;authMessage='';staffEmail='';staffSignedIn=false;staffRole:'admin'|'judge'|'member'|'pending'|'none'='none';staffMembers:{uid:string;email:string;role:string;assignedEventIds:string[]}[]=[];judgeAssignedEventIds:string[]=[];judgeAssignmentBusy=false;judgeAssignmentMessage='';;staffRoleBusy=false;staffView:'login'|'dashboard'|'judge'|'pending'='login';
+ staffRoleReady=false;authEmail='';authPassword='';authConfirmPassword='';showSignup=false;authBusy=false;authMessage='';staffEmail='';staffSignedIn=false;staffRole:'admin'|'judge'|'member'|'pending'|'none'='none';staffMembers:{uid:string;email:string;role:string;assignedEventIds:string[]}[]=[];judgeAssignedEventIds:string[]=[];judgeAssignmentBusy=false;judgeAssignmentMessage='';;staffRoleBusy=false;staffView:'login'|'dashboard'|'judge'|'pending'='login';
  get canManageEvents():boolean{return this.staffSignedIn&&this.staffRole==='admin'}
  async refreshStaffRole():Promise<void>{
    try{
@@ -81,7 +81,7 @@ export class AppComponent{
  private resolveLoginEmail(value:string):string{
    const account=value.trim();
    const aliases:Record<string,string>={admin:'admin@example.com.tw',dongjhe:'dongjhe@gmail.com'};
-   return aliases[account.toLowerCase()]??account;
+   return aliases[account.toLowerCase()]??(account.includes('@')?account:account.toLowerCase()+'@members.beybladex.invalid');
  }
  async loginStaff():Promise<void>{
    if(this.authBusy)return;this.authBusy=true;this.authMessage='';
@@ -90,10 +90,21 @@ export class AppComponent{
    finally{this.authBusy=false;this.cdr.detectChanges()}
  }
  async signupStaff():Promise<void>{
-   if(this.authBusy)return;this.authBusy=true;this.authMessage='';
-   try{await this.cloudRegistration.signUpStaff(this.authEmail.trim(),this.authPassword);await this.refreshStaffRole();this.authPassword='';this.authMessage='會員帳號已建立，可直接使用會員中心'}
-   catch(error){const message=String(error);this.authMessage=message.includes('permission-denied')?'Firebase 已建立或登入帳號，但 Firestore 拒絕建立會員資料。請先部署最新 firestore.rules，然後按「登入」重試；不要重複註冊。':'註冊失敗：'+message}
-   finally{this.authBusy=false;this.cdr.detectChanges()}
+   if(this.authBusy)return;
+   const username=this.authEmail.trim().toLowerCase();
+   if(!/^[a-z][a-z0-9_]{3,19}$/.test(username)){this.authMessage='帳號須為 4～20 個字元，英文開頭，只能使用小寫英文、數字及底線';return}
+   if(username==='admin'||username==='dongjhe'){this.authMessage='此帳號已保留，請使用其他帳號';return}
+   if(this.authPassword.length<6){this.authMessage='密碼至少需要 6 個字元';return}
+   if(this.authPassword!==this.authConfirmPassword){this.authMessage='兩次輸入的密碼不一致';return}
+   this.authBusy=true;this.authMessage='';
+   try{
+     await this.cloudRegistration.signUpStaff(this.resolveLoginEmail(username),this.authPassword);
+     await this.refreshStaffRole();this.authPassword='';this.authConfirmPassword='';this.showSignup=false;
+     this.authMessage='會員帳號已建立，可直接使用會員中心';
+   }catch(error){
+     const message=String(error);
+     this.authMessage=message.includes('email-already-in-use')?'此帳號已有人使用':message.includes('permission-denied')?'帳號已建立，但會員資料建立失敗，請聯絡管理者':'註冊失敗：'+message;
+   }finally{this.authBusy=false;this.cdr.detectChanges()}
  }
  async logoutStaff():Promise<void>{
    try{await this.cloudRegistration.signOutStaff();this.staffRole='none';this.staffSignedIn=false;this.cloudEvents=[];this.eventOwner=false;this.authMessage='已登出';this.staffView='login';this.sitePage='login';if(this.participantView){this.goSite('login');return}this.updateStaffUrl()}
