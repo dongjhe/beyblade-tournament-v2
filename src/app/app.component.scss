@@ -1301,3 +1301,25 @@
 .site-member .member-player-result{margin-top:10px}
 .site-member .member-player-result+ .member-player-result{border-top:1px solid #35373a;padding-top:10px}
 .site-member .member-player-result p{margin:4px 0}
+
+/* Member event list actions and per-player results popup. */
+.site-member .site-event-row .member-event-actions{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:wrap}
+.site-member .site-event-row .member-event-actions button{margin:0;white-space:nowrap;padding:12px 14px;font-weight:800}
+.site-member .site-event-row .member-event-actions .member-event-view-btn{background:var(--spin-lime);color:var(--spin-ink);border-color:var(--spin-lime)}
+.member-results-overlay{position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.78);display:flex;align-items:center;justify-content:center;padding:18px}
+.member-results-dialog{width:min(100%,580px);max-height:85vh;overflow-y:auto;background:#202226;border:1px solid #55585b;padding:24px;color:var(--spin-paper);box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.member-results-header{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
+.member-results-header h2{font-size:clamp(22px,4vw,32px);margin:12px 0}
+.member-results-header>button{flex-shrink:0}
+.member-results-list{border-top:1px solid #4a4d4f;margin-top:20px}
+.member-results-list-row{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:16px 0;border-bottom:1px solid #4a4d4f}
+.member-results-list-row strong{overflow-wrap:anywhere}
+.member-results-list-row span{color:#b4b6b3;white-space:nowrap}
+.member-results-footer{display:flex;justify-content:flex-end;margin-top:22px}
+@media(max-width:760px){
+  .site-member .site-event-row{grid-template-columns:minmax(0,1fr) auto}
+  .site-member .site-event-row .member-event-actions{flex-direction:column;align-items:stretch;gap:8px}
+  .site-member .site-event-row .member-event-actions button{font-size:13px;padding:10px 12px;min-width:0}
+  .member-results-dialog{padding:18px}
+  .member-results-list-row{align-items:flex-start;flex-direction:column;gap:5px}
+}
