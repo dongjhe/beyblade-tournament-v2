@@ -298,16 +298,13 @@ export class AppComponent{
  get publicMatches():Match[]{return this.publicSchedule?.matches??[]}
  get visiblePublicMatches():Match[]{if(!this.onlyMyMatches)return this.publicMatches;const names=new Set(this.myRegistrations.map(r=>r.name.trim()));return this.publicMatches.filter(m=>(!!m.a&&names.has(m.a.trim()))||(!!m.b&&names.has(m.b.trim())))}
  get myScheduledMatchCount():number{return this.publicMatches.filter(m=>this.myRegistrations.some(r=>r.name.trim()===m.a?.trim()||r.name.trim()===m.b?.trim())).length}
- readonly bracketCardStep=112;
- bracketCardTop(round:number,index:number):number{
-   const span=Math.pow(2,Math.max(0,round-1));
-   return (index+0.5)*span*this.bracketCardStep-44;
+ publicBracketSlotCount(round:number):number{
+   const first=Math.max(1,this.publicRoundMatches(1).length);
+   return Math.max(1,Math.ceil(first/Math.pow(2,round-1)));
  }
- get publicBracketHeight():number{
-   return Math.max(1,this.publicRoundMatches(1).length)*this.bracketCardStep;
- }
- get adminBracketHeight():number{
-   return Math.max(1,this.bracketSlotCount(1))*this.bracketCardStep;
+ publicBracketMatches(round:number):Match[]{
+   const matches=this.publicRoundMatches(round);
+   return Array.from({length:this.publicBracketSlotCount(round)},(_,i)=>matches[i]??({id:-(round*100+i),round,a:null,b:null,sa:null,sb:null,battleRound:1} as Match));
  }
  get publicRounds():number[]{const matches=this.publicMatches;const max=Math.max(0,...matches.map(m=>Number(m.round)||0));return Array.from({length:max},(_,i)=>i+1)}
  publicRoundMatches(round:number):Match[]{return this.publicMatches.filter(m=>m.round===round)}
