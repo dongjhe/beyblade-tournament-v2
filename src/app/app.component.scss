@@ -1335,3 +1335,9 @@
 .staff-member-tabs button.active{color:#182321;border-bottom-color:#b7ed39;background:#eef5e8}
 .staff-member-tabs button:hover:not(.active){background:#f0f2f0}
 @media(max-width:600px){.staff-member-tabs{gap:2px}.staff-member-tabs button{font-size:13px;padding:10px 8px}}
+
+/* Tournament date and start time share the date field area. */
+.event-datetime-inputs{display:grid;grid-template-columns:minmax(0,1fr) minmax(120px,.55fr);gap:12px}
+.event-datetime-inputs>div{min-width:0}
+.event-datetime-inputs input{width:100%;min-width:0}
+@media(max-width:480px){.event-datetime-inputs{grid-template-columns:minmax(0,1fr) minmax(112px,.7fr);gap:8px}}
