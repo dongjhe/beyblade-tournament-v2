@@ -65,7 +65,7 @@
 <p class="muted">建立新賽事會產生新的報名連結；管理者請使用固定帳號登入；既有匿名賽事可在原瀏覽器建立 Email 帳號以保留原 UID。</p>
 </section>
 </ng-container><section *ngIf="participantView" class="public-signup-card" id="registration">
-<div class="participant-event-summary"><strong>{{title}}</strong><div><span>📅 {{eventDate || '日期待公布'}}</span><span>📍 {{eventLocation || '地點待公布'}}</span><span>👥 上限 {{eventCapacity}} 人</span><span>💰 {{eventFee===0?'免費':'NT$ '+eventFee}}</span><span>🏆 {{mode==='league'?'積分賽':'淘汰賽'}}</span></div></div>
+<div class="participant-event-summary"><strong>{{title}}</strong><div><span>📅 {{eventDate || '日期待公布'}}<ng-container *ngIf="eventTime">　🕒 {{eventTime}}</ng-container></span><span>📍 {{eventLocation || '地點待公布'}}</span><span>👥 上限 {{eventCapacity}} 人</span><span>💰 {{eventFee===0?'免費':'NT$ '+eventFee}}</span><span>🏆 {{mode==='league'?'積分賽':'淘汰賽'}}</span></div></div>
 <p class="public-intro" *ngIf="eventNotes">📝 備註：{{eventNotes}}</p><div class="site-eyebrow">TOURNAMENT / PLAYER PORTAL</div><nav class="participant-tabs" aria-label="參賽者專區">
 <button *ngIf="staffRole!=='judge'" type="button" [class.active]="participantTab==='mine'" (click)="setParticipantTab('mine')">📝 我的報名</button>
 <button type="button" [class.active]="participantTab==='matches'" (click)="setParticipantTab('matches')">⚔️ 對戰賽程</button>
