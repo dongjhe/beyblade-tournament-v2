@@ -181,3 +181,6 @@
   }, true);
   sync();
 })();
+
+/* Recording button: same charcoal palette as the cancel-registration action. */
+(()=>{const style=document.createElement('style');style.textContent='.battle-modal>.battle-toolbar .toolbar-countdown{background:#303238!important;background-image:none!important;border:2px solid #51535a!important;color:#fff!important;-webkit-text-fill-color:#fff!important;box-shadow:none!important}.battle-modal>.battle-toolbar .toolbar-countdown:is(:hover,:focus-visible,:active){background:#303238!important;border-color:#798087!important;box-shadow:none!important}';document.head.appendChild(style)})();
