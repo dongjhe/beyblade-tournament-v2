@@ -249,3 +249,16 @@ app-root .battle-overlay .battle-decision-row button.draw-btn:not(:disabled){
   border:0!important;border-radius:12px!important;box-shadow:none!important;
 }
 .battle-info-dialog>button:hover{background:#d3e0d7!important}
+
+
+/* During GO SHOOT recording, remove the entire lower scoreboard surface,
+   not just the hidden scores/buttons. Restore the panel when paused. */
+.recording-mode-overlay.recording-live .recording-scoreboard{
+  background:transparent!important;
+  background-color:transparent!important;
+  background-image:none!important;
+  border:0!important;
+  box-shadow:none!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+}
