@@ -1269,3 +1269,10 @@
   .public-bracket-scroll.bracket-scroll{overflow-x:auto;overscroll-behavior-x:contain}
   .public-admin-bracket.bracket{min-width:max-content}
 }
+
+/* Public/judge bracket must use admin's legible white player labels. */
+.public-admin-bracket .bracket-player:not(.winner):not(.pending),
+.public-admin-bracket .bracket-player:not(.winner):not(.pending) > span:first-child{color:#f5f7f9!important;opacity:1!important;-webkit-text-fill-color:#f5f7f9!important}
+.public-admin-bracket .bracket-player.winner > span:first-child{color:#ffda45!important;-webkit-text-fill-color:#ffda45!important}
+.public-admin-bracket .bracket-player.pending > span:first-child{color:#8797a6!important;-webkit-text-fill-color:#8797a6!important}
+.site-nav.auth-pending button{visibility:hidden}
