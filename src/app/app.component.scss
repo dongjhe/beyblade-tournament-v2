@@ -1082,3 +1082,22 @@
 :host .battle-overlay .battle-reset-group > button.next-battle-btn:not(:disabled):is(:hover,:active,:focus-visible){
   background:#27302e!important;background-color:#27302e!important;border-color:#27302e!important
 }
+
+/* Battle palette refinement: blue recording action, more visible replay/draw. */
+:host .battle-overlay .battle-toolbar .toolbar-countdown,
+:host .battle-overlay .battle-toolbar button.toolbar-countdown{
+  background:#19617d!important;background-color:#19617d!important;background-image:none!important;
+  color:#fff!important;-webkit-text-fill-color:#fff!important;
+  border:2px solid #19617d!important;box-shadow:none!important
+}
+:host .battle-overlay .battle-toolbar .toolbar-countdown:is(:hover,:focus-visible,:active){
+  background:#124d66!important;background-color:#124d66!important;border-color:#124d66!important
+}
+:host .battle-overlay .battle-decision-row > button.draw-btn:not(:disabled){
+  background:#c5d0ca!important;background-color:#c5d0ca!important;background-image:none!important;
+  color:#20332c!important;-webkit-text-fill-color:#20332c!important;
+  border:2px solid #c5d0ca!important;box-shadow:none!important
+}
+:host .battle-overlay .battle-decision-row > button.draw-btn:not(:disabled):is(:hover,:focus-visible,:active){
+  background:#b6c4bc!important;background-color:#b6c4bc!important;border-color:#b6c4bc!important
+}
