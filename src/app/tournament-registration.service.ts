@@ -4,7 +4,7 @@ import { getAuth, signInAnonymously, createUserWithEmailAndPassword, signInWithE
 import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, getFirestore, onSnapshot, query, where, serverTimestamp, setDoc, updateDoc, runTransaction, Unsubscribe } from 'firebase/firestore';
 
 export interface CloudRegistration { uid: string; name: string; ownerUid: string; }
-export interface CloudEvent { id:string; title:string; mode:'league'|'knockout'; open:boolean; date:string; location:string; fee:number; notes:string; capacity:number; }
+export interface CloudEvent { id:string; title:string; mode:'league'|'knockout'; open:boolean; date:string; time?:string; location:string; fee:number; notes:string; capacity:number; }
 const app = initializeApp({
   apiKey: 'AIzaSyAPWrWFXHPyIWaS7xw7thwVwtgi4rZ4xTs',
   authDomain: 'beyblade-tournament-eeb50.firebaseapp.com',
@@ -79,7 +79,7 @@ export class TournamentRegistrationService {
     return snapshot.docs.filter(item=>item.data()['deleted']!==true).map(item=>({
       id:item.id,title:String(item.data()['title']??''),
       mode:item.data()['mode']==='knockout'?'knockout' as const:'league' as const,
-      open:item.data()['open']===true,date:String(item.data()['date']??''),
+      open:item.data()['open']===true,date:String(item.data()['date']??''),time:String(item.data()['time']??''),
       location:String(item.data()['location']??''),fee:Number(item.data()['fee']??0),notes:String(item.data()['notes']??''),capacity:Number(item.data()['capacity']??64)
     })).sort((a,b)=>a.date.localeCompare(b.date));
   }
@@ -115,21 +115,21 @@ export class TournamentRegistrationService {
     const user=auth.currentUser;
     if(!user||user.isAnonymous)return [];
     const snapshot=await getDocs(query(collection(db,'events'),where('ownerUid','==',user.uid)));
-    return snapshot.docs.filter(item=>item.data()['deleted']!==true).map(item=>({id:item.id,title:String(item.data()['title']??''),mode:item.data()['mode']==='knockout'?'knockout' as const:'league' as const,open:item.data()['open']===true,date:String(item.data()['date']??''),location:String(item.data()['location']??''),fee:Number(item.data()['fee']??0),notes:String(item.data()['notes']??''),capacity:Number(item.data()['capacity']??64)})).sort((a,b)=>a.title.localeCompare(b.title,'zh-Hant'));
+    return snapshot.docs.filter(item=>item.data()['deleted']!==true).map(item=>({id:item.id,title:String(item.data()['title']??''),mode:item.data()['mode']==='knockout'?'knockout' as const:'league' as const,open:item.data()['open']===true,date:String(item.data()['date']??''),time:String(item.data()['time']??''),location:String(item.data()['location']??''),fee:Number(item.data()['fee']??0),notes:String(item.data()['notes']??''),capacity:Number(item.data()['capacity']??64)})).sort((a,b)=>a.title.localeCompare(b.title,'zh-Hant'));
   }
-  async createEvent(title: string, mode: 'league' | 'knockout', date:string, location:string,fee:number,notes:string,capacity:number): Promise<string> {
+  async createEvent(title: string, mode: 'league' | 'knockout', date:string, location:string,fee:number,notes:string,capacity:number,time:string=''): Promise<string> {
     const user = auth.currentUser;
     if(!user||user.isAnonymous)throw new Error('請先以管理者帳號登入');
     const eventRef = doc(collection(db, 'events'));
-    await setDoc(eventRef, { title, mode, date, location, fee, notes, capacity, registrationCount:0, ownerUid: user.uid, open: true, deleted:false, createdAt: serverTimestamp() });
+    await setDoc(eventRef, { title, mode, date, time, location, fee, notes, capacity, registrationCount:0, ownerUid: user.uid, open: true, deleted:false, createdAt: serverTimestamp() });
     return eventRef.id;
   }
-  async loadEvent(eventId: string): Promise<{title:string;mode:'league'|'knockout';open:boolean;ownerUid:string;date:string;location:string;fee:number;notes:string;capacity:number}> {
+  async loadEvent(eventId: string): Promise<{title:string;mode:'league'|'knockout';open:boolean;ownerUid:string;date:string;time?:string;location:string;fee:number;notes:string;capacity:number}> {
     if(!auth.currentUser)await signInAnonymously(auth);
     const snap = await getDoc(doc(db, 'events', eventId));
     if (!snap.exists() || snap.data()['deleted']===true) throw new Error('找不到賽事或賽事已刪除');
     const data = snap.data();
-    return {title:String(data['title']),mode:data['mode']==='knockout'?'knockout':'league',open:data['open']===true,ownerUid:String(data['ownerUid']),date:String(data['date']??''),location:String(data['location']??''),fee:Number(data['fee']??0),notes:String(data['notes']??''),capacity:Number(data['capacity']??64)};
+    return {title:String(data['title']),mode:data['mode']==='knockout'?'knockout':'league',open:data['open']===true,ownerUid:String(data['ownerUid']),date:String(data['date']??''),time:String(data['time']??''),location:String(data['location']??''),fee:Number(data['fee']??0),notes:String(data['notes']??''),capacity:Number(data['capacity']??64)};
   }
   async setRegistrationOpen(open:boolean):Promise<void> {
     const user=auth.currentUser;
