@@ -83,7 +83,7 @@ export class TournamentRegistrationService {
       location:String(item.data()['location']??''),fee:Number(item.data()['fee']??0),notes:String(item.data()['notes']??''),capacity:Number(item.data()['capacity']??64)
     })).sort((a,b)=>a.date.localeCompare(b.date));
   }
-  async listMyRegistrationHistory():Promise<{event:CloudEvent;players:string[];wins:number;losses:number;scored:number}[]>{
+  async listMyRegistrationHistory():Promise<{event:CloudEvent;players:{name:string;wins:number;losses:number;scored:number}[]}[]>{
     await this.ensureParticipantAuth();
     const uid=auth.currentUser?.uid;
     if(!uid)return [];
@@ -92,19 +92,21 @@ export class TournamentRegistrationService {
       try{
         const snapshot=await getDocs(query(collection(db,'events',event.id,'registrations'),where('uid','==',uid)));
         if(snapshot.empty)return null;
-        const players=snapshot.docs.map(item=>String(item.data()['name']??'')).filter(Boolean);
-        let wins=0,losses=0,scored=0;
+        const players=snapshot.docs.map(item=>String(item.data()['name']??'')).filter(Boolean)
+          .map(name=>({name,wins:0,losses:0,scored:0}));
         const schedule=await getDoc(doc(db,'events',event.id,'public','schedule'));
         const matches=(schedule.data()?.['matches']??[]) as {a?:string|null;b?:string|null;sa?:number|null;sb?:number|null}[];
         for(const match of matches){
-          if(!match['a']||!match['b']||match.sa==null||match.sb==null||Math.max(match.sa,match.sb)<4)continue;
-          const side=players.includes(match.a)?'a':players.includes(match.b)?'b':null;
-          if(!side)continue;
-          const mine=side==='a'?match.sa:match.sb,other=side==='a'?match.sb:match.sa;
-          scored+=mine;
-          if(mine>other)wins++;else if(mine<other)losses++;
+          if(!match.a||!match.b||match.sa==null||match.sb==null||Math.max(match.sa,match.sb)<4)continue;
+          for(const player of players){
+            const side=match.a===player.name?'a':match.b===player.name?'b':null;
+            if(!side)continue;
+            const mine=side==='a'?match.sa:match.sb,other=side==='a'?match.sb:match.sa;
+            player.scored+=mine;
+            if(mine>other)player.wins++;else if(mine<other)player.losses++;
+          }
         }
-        return {event,players,wins,losses,scored};
+        return {event,players};
       }catch{return null}
     }));
     return results.filter((item):item is NonNullable<typeof item>=>item!==null);
