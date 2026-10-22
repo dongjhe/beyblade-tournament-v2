@@ -1073,3 +1073,9 @@
 :host .battle-overlay .battle-decision-row .draw-btn:is(:hover,:focus-visible,:active),
 :host .battle-overlay .battle-decision-row .reset-btn:is(:hover,:focus-visible,:active),
 :host .battle-overlay .battle-reset-group .next-battle-btn:not(:disabled):is(:hover,:focus-visible,:active){background:#096b60!important;border-color:#096b60!important;color:#fff!important;-webkit-text-fill-color:#fff!important}
+
+/* Keep all three battle action buttons visually consistent, including their nested labels. */
+:host .battle-overlay .battle-decision-row > button.draw-btn,
+:host .battle-overlay .battle-decision-row > button.reset-btn,
+:host .battle-overlay .battle-reset-group > button.next-battle-btn:not(:disabled){background:#087d70!important;background-color:#087d70!important;background-image:none!important;color:#fff!important;-webkit-text-fill-color:#fff!important;border:2px solid #087d70!important;box-shadow:none!important;opacity:1!important}
+:host .battle-overlay .battle-decision-row > button.draw-btn:disabled{background:#dce4d8!important;background-color:#dce4d8!important;color:#7b8778!important;-webkit-text-fill-color:#7b8778!important;border-color:#dce4d8!important}
