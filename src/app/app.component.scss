@@ -1341,3 +1341,20 @@
 .event-datetime-inputs>div{min-width:0}
 .event-datetime-inputs input{width:100%;min-width:0}
 @media(max-width:480px){.event-datetime-inputs{grid-template-columns:minmax(0,1fr) minmax(112px,.7fr);gap:8px}}
+
+/* iOS Safari: native date/time controls must not overflow the form column. */
+.event-datetime-inputs{width:100%;max-width:100%;min-width:0;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.event-datetime-inputs input[type="date"],
+.event-datetime-inputs input[type="time"]{
+  display:block;
+  box-sizing:border-box;
+  width:100%;
+  min-width:0;
+  max-width:100%;
+  font-size:16px;
+  -webkit-appearance:none;
+  appearance:none;
+}
+@media(max-width:640px){
+  .event-datetime-inputs{grid-template-columns:minmax(0,1fr);gap:10px}
+}
