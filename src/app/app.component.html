@@ -7,8 +7,8 @@
 <ng-container *ngIf="!participantView && (sitePage==='login'||sitePage==='admin'||sitePage==='judge')"><section *ngIf="sitePage==='login' || (sitePage==='judge' && !staffSignedIn)" class="card staff-auth-panel">
 <div class="site-eyebrow">ACCOUNT / SIGN IN</div><h2>會員／工作登入<span class="site-title-slash">/</span></h2>
 <ng-container *ngIf="!staffSignedIn">
-<p class="muted">一般會員、家長、裁判與管理者都可使用 Email + 密碼登入；參賽者仍可透過 QR Code 免登入報名。</p>
-<div class="grid"><div><label for="staff-email">Email</label><input id="staff-email" type="email" [(ngModel)]="authEmail" autocomplete="email" placeholder="name@example.com"></div><div><label for="staff-password">密碼</label><input id="staff-password" type="password" [(ngModel)]="authPassword" autocomplete="current-password" placeholder="至少 6 個字元" (keyup.enter)="loginStaff()"></div></div>
+<p class="muted">管理者可使用 admin、裁判可使用 dongjhe 搭配原密碼登入；其他會員仍可使用完整 Email。參賽者可透過 QR Code 免登入報名。</p>
+<div class="grid"><div><label for="staff-email">帳號／Email</label><input id="staff-email" type="text" [(ngModel)]="authEmail" autocomplete="username" placeholder="admin 或 dongjhe"></div><div><label for="staff-password">密碼</label><input id="staff-password" type="password" [(ngModel)]="authPassword" autocomplete="current-password" placeholder="至少 6 個字元" (keyup.enter)="loginStaff()"></div></div>
 <div class="actions"><button type="button" [disabled]="authBusy || !authEmail || !authPassword" (click)="loginStaff()">登入</button><button type="button" class="secondary" [disabled]="authBusy || !authEmail || authPassword.length<6" (click)="signupStaff()">建立帳號</button></div>
 </ng-container>
 <ng-container *ngIf="staffSignedIn"><div class="staff-session"><div><strong>{{staffEmail}}</strong><p class="muted">身分：{{staffRole==='admin'?'管理者':staffRole==='judge'?'裁判':staffRole==='member'?'一般會員':'待審核'}}</p></div><div class="actions"><button type="button" class="secondary" (click)="refreshStaffRole()">重新檢查權限</button><button type="button" class="secondary" (click)="logoutStaff()">登出</button></div></div>
