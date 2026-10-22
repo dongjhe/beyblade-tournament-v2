@@ -85,7 +85,7 @@ export class AppComponent{
  }
  async loginStaff():Promise<void>{
    if(this.authBusy)return;this.authBusy=true;this.authMessage='';
-   try{await this.cloudRegistration.signInStaff(this.resolveLoginEmail(this.authEmail),this.authPassword);await this.cloudRegistration.ensureStaffProfile();await this.refreshStaffRole();this.authPassword='';this.authMessage='登入成功'}
+   try{await this.cloudRegistration.signInStaff(this.resolveLoginEmail(this.authEmail),this.authPassword);this.staffSignedIn=true;await this.cloudRegistration.ensureStaffProfile();await this.refreshStaffRole();this.authPassword='';this.authMessage='登入成功'}
    catch(error){this.authMessage='登入失敗：'+String(error)}
    finally{this.authBusy=false;this.cdr.detectChanges()}
  }
@@ -99,6 +99,7 @@ export class AppComponent{
    this.authBusy=true;this.authMessage='';
    try{
      await this.cloudRegistration.signUpStaff(this.resolveLoginEmail(username),this.authPassword);
+     this.staffSignedIn=true;
      await this.refreshStaffRole();this.authPassword='';this.authConfirmPassword='';this.showSignup=false;
      this.authMessage='會員帳號已建立，可直接使用會員中心';
    }catch(error){
