@@ -1047,3 +1047,17 @@
 :host .battle-overlay .battle-swap-control .swap-side-btn{pointer-events:auto;position:relative;z-index:11;min-height:42px;padding:10px 18px;background:#087f74;color:#fff;border:0;border-radius:12px;font-weight:800;cursor:pointer}
 :host .battle-overlay .battle-swap-control .swap-side-btn:disabled{opacity:.5;cursor:not-allowed}
 @media(max-width:760px){:host .battle-overlay .battle-swap-control{grid-area:auto;grid-column:1/-1;justify-content:stretch}:host .battle-overlay .battle-swap-control .swap-side-btn{width:100%}}
+
+/* 得分與發射失敗：點擊、觸控、選取時只加強外框，不改變原本底色。 */
+:host .battle-overlay .battle-arena .battle-side:not(.right-side) .finish-btn:is(:hover,:active,:focus,:focus-visible),
+:host .battle-overlay .battle-arena .battle-side:not(.right-side) .launch-fail-btn:is(:hover,:active,:focus,:focus-visible),
+:host .battle-overlay .battle-arena .battle-side:not(.right-side) .launch-fail-btn.has-fail{background:#e5f4ef!important;background-image:none!important;outline:2px solid #139482!important;outline-offset:-2px;box-shadow:none!important}
+:host .battle-overlay .battle-arena .battle-side.right-side .finish-btn:is(:hover,:active,:focus,:focus-visible),
+:host .battle-overlay .battle-arena .battle-side.right-side .launch-fail-btn:is(:hover,:active,:focus,:focus-visible),
+:host .battle-overlay .battle-arena .battle-side.right-side .launch-fail-btn.has-fail{background:#f0eafa!important;background-image:none!important;outline:2px solid #9154b8!important;outline-offset:-2px;box-shadow:none!important}
+:host .battle-overlay .battle-arena.sides-swapped .battle-side:not(.right-side) .finish-btn:is(:hover,:active,:focus,:focus-visible),
+:host .battle-overlay .battle-arena.sides-swapped .battle-side:not(.right-side) .launch-fail-btn:is(:hover,:active,:focus,:focus-visible),
+:host .battle-overlay .battle-arena.sides-swapped .battle-side:not(.right-side) .launch-fail-btn.has-fail{background:#f0eafa!important;background-image:none!important;outline-color:#9154b8!important}
+:host .battle-overlay .battle-arena.sides-swapped .battle-side.right-side .finish-btn:is(:hover,:active,:focus,:focus-visible),
+:host .battle-overlay .battle-arena.sides-swapped .battle-side.right-side .launch-fail-btn:is(:hover,:active,:focus,:focus-visible),
+:host .battle-overlay .battle-arena.sides-swapped .battle-side.right-side .launch-fail-btn.has-fail{background:#e5f4ef!important;background-image:none!important;outline-color:#139482!important}
