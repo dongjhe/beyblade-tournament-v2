@@ -212,3 +212,40 @@ app-root .battle-overlay .battle-decision-row button.draw-btn:not(:disabled){
   border-color:#dfcf96!important;
   color:#26372f!important;
 }
+
+
+/* Live tournament standings dialog — align with the light battle palette. */
+.battle-info-dialog{
+  background:#f5f7f3!important;color:#243830!important;
+  border:1px solid #d6e1da!important;border-radius:18px!important;
+  box-shadow:0 20px 55px #182d2940!important;
+}
+.battle-info-dialog::backdrop{background:#18282499!important;backdrop-filter:blur(4px)}
+.battle-info-dialog h2{
+  color:#263d35!important;text-shadow:none!important;
+  padding:0 52px 0 0!important;text-align:center!important;
+}
+.battle-info-dialog h3{
+  color:#087f73!important;border-bottom:2px solid #a7d8cb!important;
+}
+.battle-info-dialog p{
+  background:#fff!important;color:#263d35!important;
+  border:1px solid #d5e1da!important;border-radius:10px!important;
+}
+.battle-info-dialog table{
+  background:#fff!important;border:1px solid #d5e1da!important;
+}
+.battle-info-dialog th{
+  background:#e4eee9!important;color:#263d35!important;
+}
+.battle-info-dialog td{
+  background:#fff!important;color:#263d35!important;
+  border-bottom:1px solid #e1e8e3!important;
+}
+.battle-info-dialog tbody tr:nth-child(even) td{background:#f3f7f4!important}
+.battle-info-dialog tbody tr:first-child td{color:#087f73!important;font-weight:900!important}
+.battle-info-dialog>button{
+  background:#e4ece6!important;color:#263d35!important;
+  border:0!important;border-radius:12px!important;box-shadow:none!important;
+}
+.battle-info-dialog>button:hover{background:#d3e0d7!important}
