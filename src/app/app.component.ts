@@ -156,12 +156,12 @@ judgeAssignedEventIds:string[]=[];judgeAssignmentBusy=false;judgeAssignmentMessa
 
  registrationName='';registrationMessage='';registrationOpen=true;registrationReady=false;registrationBusy=false;
  cloudRegistrations:CloudRegistration[]=[];
- eventDate='';eventLocation='';eventFee=0;eventNotes='';eventCapacity=64;eventId='main';eventLink='';eventQrCode='';eventOwner=false;participantView=new URLSearchParams(location.search).has('event');publicSchedule: {mode:Mode;players:string[];matches:Match[]}|null=null;publicScheduleError='';scheduleSyncState:'idle'|'syncing'|'success'|'error'='idle';private schedulePending=false;private scheduleRunning=false;participantTab:'mine'|'matches'|'ranking'='mine';onlyMyMatches=false;eventBusy=false;cloudEvents:CloudEvent[]=[];eventSelectBusy=false;
+ eventDate='';eventTime='';eventLocation='';eventFee=0;eventNotes='';eventCapacity=64;eventId='main';eventLink='';eventQrCode='';eventOwner=false;participantView=new URLSearchParams(location.search).has('event');publicSchedule: {mode:Mode;players:string[];matches:Match[]}|null=null;publicScheduleError='';scheduleSyncState:'idle'|'syncing'|'success'|'error'='idle';private schedulePending=false;private scheduleRunning=false;participantTab:'mine'|'matches'|'ranking'='mine';onlyMyMatches=false;eventBusy=false;cloudEvents:CloudEvent[]=[];eventSelectBusy=false;
  private async initializeRegistrationEvent():Promise<void>{
  await this.cloudRegistration.waitForAuth();
  const id=new URLSearchParams(location.search).get('event');this.participantView=!!id;
  if(id){this.started=false;this.matches=[];this.players=[];}
- if(id){try{await this.cloudRegistration.useEvent(id);const event=await this.cloudRegistration.loadEvent(id);this.eventId=id;this.title=event.title;this.mode=event.mode;this.registrationOpen=event.open;this.eventDate=event.date;this.eventLocation=event.location;this.eventFee=event.fee;this.eventNotes=event.notes;this.eventCapacity=event.capacity;this.eventOwner=event.ownerUid===this.cloudRegistration.currentUserId;this.eventLink=location.origin+location.pathname+'?event='+encodeURIComponent(id);await this.updateEventQr()}
+ if(id){try{await this.cloudRegistration.useEvent(id);const event=await this.cloudRegistration.loadEvent(id);this.eventId=id;this.title=event.title;this.mode=event.mode;this.registrationOpen=event.open;this.eventDate=event.date;this.eventTime=event.time??'';this.eventLocation=event.location;this.eventFee=event.fee;this.eventNotes=event.notes;this.eventCapacity=event.capacity;this.eventOwner=event.ownerUid===this.cloudRegistration.currentUserId;this.eventLink=location.origin+location.pathname+'?event='+encodeURIComponent(id);await this.updateEventQr()}
  catch(error){this.registrationMessage='賽事載入失敗：'+String(error);return}}
  if(!this.participantView && id)await this.restoreSelectedEventSchedule(id);
  await this.connectRegistrations();
