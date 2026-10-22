@@ -242,7 +242,7 @@ export class AppComponent{
  async beginJudgeMatch(m:Match):Promise<void>{
    if(this.staffRole!=='judge'||!this.judgeAssignedEventIds.includes(this.eventId)||!m.a||!m.b||this.judgeMatchBusy)return;
    this.judgeMatchBusy=true;this.judgeScoreMessage='';
-   try{await this.cloudRegistration.claimJudgeMatch(this.eventId,m.id);this.judgeMatchId=m.id;this.battleMatch={...m,sa:m.sa??0,sb:m.sb??0};this.battleRound=m.battleRound??1;this.resetLaunchFails();this.judgeScoreMessage='已鎖定場次，只有你可以計分'}
+   try{await this.cloudRegistration.claimJudgeMatch(this.eventId,m.id);this.judgeMatchId=m.id;this.battleMatch={...m,sa:m.sa??0,sb:m.sb??0};this.battleRound=m.battleRound??1;this.resetLaunchFails();this.judgeScoreMessage=''}
    catch(error){this.judgeScoreMessage='無法進入對戰：'+String(error)}
    finally{this.judgeMatchBusy=false;this.cdr.detectChanges()}
  }
