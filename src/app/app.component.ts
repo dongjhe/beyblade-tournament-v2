@@ -22,6 +22,10 @@ export class AppComponent{
  calendarMonth=new Date(new Date().getFullYear(),new Date().getMonth(),1);
  memberHistory:{event:CloudEvent;players:{name:string;wins:number;losses:number;scored:number}[]}[]=[];
  memberHistoryLoading=false;memberHistoryError='';
+ selectedMemberHistory:{event:CloudEvent;players:{name:string;wins:number;losses:number;scored:number}[]}|null=null;
+ openMemberResults(item:{event:CloudEvent;players:{name:string;wins:number;losses:number;scored:number}[]}):void{this.selectedMemberHistory=item}
+ closeMemberResults():void{this.selectedMemberHistory=null}
+
  get calendarTitle():string{return this.calendarMonth.toLocaleDateString('zh-TW',{year:'numeric',month:'long'})}
  get calendarCells():(number|null)[]{const y=this.calendarMonth.getFullYear(),m=this.calendarMonth.getMonth(),offset=new Date(y,m,1).getDay(),days=new Date(y,m+1,0).getDate();return [...Array.from({length:offset},()=>null),...Array.from({length:days},(_,i)=>i+1)]}
  eventStatus(event:CloudEvent):'open'|'closed'|'ended'{
