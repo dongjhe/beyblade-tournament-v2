@@ -1061,3 +1061,7 @@
 :host .battle-overlay .battle-arena.sides-swapped .battle-side.right-side .finish-btn:is(:hover,:active,:focus,:focus-visible),
 :host .battle-overlay .battle-arena.sides-swapped .battle-side.right-side .launch-fail-btn:is(:hover,:active,:focus,:focus-visible),
 :host .battle-overlay .battle-arena.sides-swapped .battle-side.right-side .launch-fail-btn.has-fail{background:#e5f4ef!important;background-image:none!important;outline-color:#139482!important}
+
+/* Next match: calm deep teal instead of fluorescent green. */
+:host .battle-overlay .battle-reset-group .next-battle-btn:not(:disabled){background:#087d70!important;background-image:none!important;color:#fff!important;border:2px solid #087d70!important;box-shadow:none!important}
+:host .battle-overlay .battle-reset-group .next-battle-btn:not(:disabled):is(:hover,:active,:focus-visible){background:#087d70!important;border-color:#13594f!important;box-shadow:none!important}
