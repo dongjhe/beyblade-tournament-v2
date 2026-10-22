@@ -1277,5 +1277,21 @@
 .public-admin-bracket .bracket-player.pending > span:first-child{color:#8797a6!important;-webkit-text-fill-color:#8797a6!important}
 .site-nav.auth-pending button{visibility:hidden}
 
-/* Keep the member-history event action right-aligned on desktop and mobile. */
-.site-member .site-event-row .member-event-view-btn{margin-left:auto;align-self:flex-end;flex-shrink:0}
+/* Member history rows use the same two-column layout as public event rows. */
+.site-member .site-event-row{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  align-items:center;
+  gap:12px;
+}
+.site-member .site-event-row>div{min-width:0}
+.site-member .site-event-row .member-event-view-btn{
+  grid-column:2;
+  justify-self:end;
+  align-self:center;
+  margin:0;
+  min-width:100px;
+  padding:12px 14px;
+  white-space:nowrap;
+}
+
