@@ -1079,3 +1079,20 @@
 :host .battle-overlay .battle-decision-row > button.reset-btn,
 :host .battle-overlay .battle-reset-group > button.next-battle-btn:not(:disabled){background:#087d70!important;background-color:#087d70!important;background-image:none!important;color:#fff!important;-webkit-text-fill-color:#fff!important;border:2px solid #087d70!important;box-shadow:none!important;opacity:1!important}
 :host .battle-overlay .battle-decision-row > button.draw-btn:disabled{background:#dce4d8!important;background-color:#dce4d8!important;color:#7b8778!important;-webkit-text-fill-color:#7b8778!important;border-color:#dce4d8!important}
+
+/* Coordinated teal family, distinct emphasis per battle action. */
+:host .battle-overlay .battle-decision-row > button.draw-btn:not(:disabled){
+  background:#dbece7!important;background-color:#dbece7!important;background-image:none!important;
+  color:#214e45!important;-webkit-text-fill-color:#214e45!important;border:2px solid #b9d6cb!important;box-shadow:none!important
+}
+:host .battle-overlay .battle-decision-row > button.reset-btn:not(:disabled){
+  background:#31594f!important;background-color:#31594f!important;background-image:none!important;
+  color:#fff!important;-webkit-text-fill-color:#fff!important;border:2px solid #31594f!important;box-shadow:none!important
+}
+:host .battle-overlay .battle-reset-group > button.next-battle-btn:not(:disabled){
+  background:#087d70!important;background-color:#087d70!important;background-image:none!important;
+  color:#fff!important;-webkit-text-fill-color:#fff!important;border:2px solid #087d70!important;box-shadow:none!important
+}
+:host .battle-overlay .battle-decision-row > button.draw-btn:not(:disabled):is(:hover,:active,:focus-visible){background:#c9e3da!important;background-color:#c9e3da!important;border-color:#8ebdae!important;color:#214e45!important;-webkit-text-fill-color:#214e45!important}
+:host .battle-overlay .battle-decision-row > button.reset-btn:not(:disabled):is(:hover,:active,:focus-visible){background:#25483f!important;background-color:#25483f!important;border-color:#25483f!important}
+:host .battle-overlay .battle-reset-group > button.next-battle-btn:not(:disabled):is(:hover,:active,:focus-visible){background:#066b60!important;background-color:#066b60!important;border-color:#066b60!important}
