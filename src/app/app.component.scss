@@ -1276,3 +1276,6 @@
 .public-admin-bracket .bracket-player.winner > span:first-child{color:#ffda45!important;-webkit-text-fill-color:#ffda45!important}
 .public-admin-bracket .bracket-player.pending > span:first-child{color:#8797a6!important;-webkit-text-fill-color:#8797a6!important}
 .site-nav.auth-pending button{visibility:hidden}
+
+/* Keep the member-history event action right-aligned on desktop and mobile. */
+.site-member .site-event-row .member-event-view-btn{margin-left:auto;align-self:flex-end;flex-shrink:0}
