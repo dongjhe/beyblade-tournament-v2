@@ -1026,3 +1026,24 @@
  :host .battle-overlay .score-player-name{font-size:15px!important;min-height:22px!important}
  :host .battle-overlay .battle-tools>.launch-fail-btn{display:none!important}
 }
+
+
+/* Swap the complete visual identity with each player, not merely the labels. */
+:host .battle-overlay .battle-arena.sides-swapped .score-versus>div:first-child .big-score{background:#f0e8fa!important;color:#8650b2!important;border-color:#b68bda!important}
+:host .battle-overlay .battle-arena.sides-swapped .score-versus>div:last-child .big-score{background:#daf3eb!important;color:#138878!important;border-color:#43bda9!important}
+:host .battle-overlay .battle-arena.sides-swapped .score-versus>div:first-child .score-player-name{color:#8650b2!important}
+:host .battle-overlay .battle-arena.sides-swapped .score-versus>div:last-child .score-player-name{color:#138878!important}
+:host .battle-overlay .battle-arena.sides-swapped .battle-side:not(.right-side) .finish-btn{background:#f0eafa!important;color:#513966!important}
+:host .battle-overlay .battle-arena.sides-swapped .battle-side:not(.right-side) .finish-btn strong,
+:host .battle-overlay .battle-arena.sides-swapped .battle-side:not(.right-side) .finish-btn.xtreme b{color:#9154b8!important}
+:host .battle-overlay .battle-arena.sides-swapped .battle-side.right-side .finish-btn{background:#e5f4ef!important;color:#23453e!important}
+:host .battle-overlay .battle-arena.sides-swapped .battle-side.right-side .finish-btn strong,
+:host .battle-overlay .battle-arena.sides-swapped .battle-side.right-side .finish-btn.xtreme b{color:#139482!important}
+:host .battle-overlay .battle-arena.sides-swapped .battle-side:not(.right-side) .launch-fail-btn{background:#eee2f7!important;color:#714396!important;border-color:#cda9e6!important}
+:host .battle-overlay .battle-arena.sides-swapped .battle-side.right-side .launch-fail-btn{background:#d9f0e8!important;color:#127e70!important;border-color:#8ed6c6!important}
+:host .battle-overlay .battle-arena.sides-swapped .battle-tools>.launch-fail-btn:first-child{background:#eee2f7!important;color:#714396!important;border-color:#cda9e6!important}
+:host .battle-overlay .battle-arena.sides-swapped .battle-tools>.launch-fail-btn:last-child{background:#d9f0e8!important;color:#127e70!important;border-color:#8ed6c6!important}
+:host .battle-overlay .battle-swap-control{position:relative;grid-column:1/-1;z-index:10;display:flex;justify-content:flex-start;pointer-events:none}
+:host .battle-overlay .battle-swap-control .swap-side-btn{pointer-events:auto;position:relative;z-index:11;min-height:42px;padding:10px 18px;background:#087f74;color:#fff;border:0;border-radius:12px;font-weight:800;cursor:pointer}
+:host .battle-overlay .battle-swap-control .swap-side-btn:disabled{opacity:.5;cursor:not-allowed}
+@media(max-width:760px){:host .battle-overlay .battle-swap-control{grid-area:auto;grid-column:1/-1;justify-content:stretch}:host .battle-overlay .battle-swap-control .swap-side-btn{width:100%}}
