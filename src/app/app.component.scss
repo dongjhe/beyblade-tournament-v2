@@ -1352,8 +1352,12 @@
   min-width:0;
   max-width:100%;
   font-size:16px;
-  -webkit-appearance:none;
-  appearance:none;
+  height:52px;
+  min-height:52px;
+  padding:10px 12px;
+  line-height:normal;
+  -webkit-appearance:auto;
+  appearance:auto;
 }
 @media(max-width:640px){
   .event-datetime-inputs{grid-template-columns:minmax(0,1fr);gap:10px}
