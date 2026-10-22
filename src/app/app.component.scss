@@ -1229,3 +1229,24 @@
 .bracket-champion-slot{flex:1;display:flex;align-items:center;justify-content:flex-start;min-height:94px}
 .bracket-champion-node{position:relative;margin-left:43px;min-width:100px;max-width:135px;padding:15px 12px;border-radius:10px;background:#ffd83d;color:#1d2729;font-size:22px;font-weight:900;text-align:center;overflow-wrap:anywhere;box-shadow:0 4px 14px #0002}
 .bracket-champion-node:before{content:'';position:absolute;left:-43px;top:50%;width:43px;height:2px;background:#ffd83d;box-shadow:0 0 7px #ffd83d88}
+
+/* Mobile public event rows: keep the schedule action on the right. */
+@media (max-width:760px){
+  :host .site-events .site-event-row{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto;
+    align-items:center;
+    gap:12px;
+  }
+  :host .site-events .site-event-row>div{min-width:0}
+  :host .site-events .site-event-row>button{
+    grid-column:2;
+    justify-self:end;
+    align-self:center;
+    flex-shrink:0;
+    margin:0;
+    padding:12px 14px;
+    min-width:100px;
+    white-space:nowrap;
+  }
+}
