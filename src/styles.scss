@@ -88,3 +88,19 @@ body button,body input,body select,body textarea{font-family:'Noto Sans TC',sans
 .battle-info-dialog p{background:#1b1e20;color:#f4f1e9;border-color:#484b4c}
 .battle-info-dialog>button{border-color:#c8f542;background:#c8f542;color:#17191d}
 .battle-info-dialog>button::before{color:#17191d}
+
+/* Global battle toolbar overrides: toolbar may be dynamically mounted outside app-root. */
+.battle-toolbar button.toolbar-countdown,
+.battle-overlay .battle-toolbar button.toolbar-countdown,
+app-root .battle-toolbar button.toolbar-countdown{
+  background:#19617d!important;background-color:#19617d!important;background-image:none!important;
+  color:#fff!important;-webkit-text-fill-color:#fff!important;
+  border:2px solid #19617d!important;box-shadow:none!important
+}
+.battle-toolbar button.toolbar-countdown:is(:hover,:focus-visible,:active){
+  background:#124d66!important;background-color:#124d66!important;border-color:#124d66!important
+}
+app-root .battle-overlay .battle-decision-row button.draw-btn:not(:disabled){
+  background:#c5d0ca!important;background-color:#c5d0ca!important;background-image:none!important;
+  color:#20332c!important;-webkit-text-fill-color:#20332c!important;border:2px solid #c5d0ca!important
+}
