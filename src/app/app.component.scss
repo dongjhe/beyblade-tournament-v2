@@ -1260,24 +1260,12 @@
 .public-bracket-round:has(+ .public-bracket-champion) .public-bracket-match:after{border-color:#ffd83d}
 @media(max-width:600px){.public-bracket-champion{width:140px;flex-basis:140px}.public-bracket-champion-name:before{width:25px}}
 
-/* Shared knockout geometry: round n sits at the midpoint of its two feeders.
-   Keep the same fixed coordinate system inside the horizontal scroll on phones. */
-.bracket,.public-bracket{align-items:flex-start!important}
-.bracket-round,.public-bracket-round{flex:0 0 auto!important;justify-content:flex-start!important}
-.bracket-list,.public-bracket-round{position:relative!important}
-.bracket-list{display:block!important;flex:none!important;height:var(--bracket-height)!important;min-height:var(--bracket-height)!important}
-.public-bracket-round{height:calc(var(--bracket-height) + 32px)!important}
-.bracket-match,.public-bracket-match{position:absolute!important;left:0;right:0;height:88px!important;min-height:88px!important;margin-top:0!important;margin-bottom:0!important;box-sizing:border-box}
-.public-bracket-match{top:auto}
-.bracket-champion-round,.public-bracket-champion{align-self:stretch}
-.bracket-champion-slot{flex:none!important;height:var(--bracket-height)!important;min-height:var(--bracket-height)!important}
-.public-bracket-champion-slot{flex:none!important;height:var(--bracket-height)!important;min-height:var(--bracket-height)!important}
-/* The champion connector extends right from the final match to the trophy. */
-.bracket-round:has(+ .bracket-champion-round) .bracket-match:after,
-.public-bracket-round:has(+ .public-bracket-champion) .public-bracket-match:after{
- content:'';position:absolute;left:100%;top:50%;width:42px;border-top:2px solid #ffd83d
-}
+/* Judge ranking uses the same bracket grid, cards, and champion styling as admin. */
+.public-admin-bracket .bracket-round h4{color:#192b31}
+.public-admin-bracket .bracket-list{min-height:0}
+.public-admin-bracket .bracket-match{box-sizing:border-box}
+.public-admin-bracket .bracket-champion-round h4{color:#b88600}
 @media(max-width:600px){
- .bracket-round:has(+ .bracket-champion-round) .bracket-match:after,
- .public-bracket-round:has(+ .public-bracket-champion) .public-bracket-match:after{width:25px}
+  .public-bracket-scroll.bracket-scroll{overflow-x:auto;overscroll-behavior-x:contain}
+  .public-admin-bracket.bracket{min-width:max-content}
 }
