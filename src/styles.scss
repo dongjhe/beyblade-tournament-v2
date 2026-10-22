@@ -271,3 +271,17 @@ app-root .battle-overlay .battle-decision-row button.draw-btn:not(:disabled){
 .recording-mode-overlay.sides-swapped .recording-scoreboard>.recording-player:first-child .recording-fail{background:#f0eafa!important;color:#8650b2!important;border-color:#d8b8ee!important;box-shadow:inset 0 0 0 2px #d8b8ee!important}
 .recording-mode-overlay.sides-swapped .recording-scoreboard>.recording-player:last-child .recording-finish-row button,
 .recording-mode-overlay.sides-swapped .recording-scoreboard>.recording-player:last-child .recording-fail{background:#e5f4ef!important;color:#167e70!important;border-color:#b8e1d6!important;box-shadow:inset 0 0 0 2px #b8e1d6!important}
+
+
+/* The launch-failure indicator belongs to the player, not the screen side.
+   Swap active lamp colors together with names, scores and button surfaces. */
+.recording-mode-overlay.sides-swapped .recording-scoreboard > .recording-player:first-child .recording-fail i.active{
+  background:#8650b2!important;
+  border-color:#8650b2!important;
+  box-shadow:none!important;
+}
+.recording-mode-overlay.sides-swapped .recording-scoreboard > .recording-player:last-child .recording-fail i.active{
+  background:#138878!important;
+  border-color:#138878!important;
+  box-shadow:none!important;
+}
