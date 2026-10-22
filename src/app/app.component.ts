@@ -36,7 +36,7 @@ export class AppComponent{
  }
  eventsOnDay(day:number|null):CloudEvent[]{if(day===null)return [];const date=this.calendarMonth.getFullYear()+'-'+String(this.calendarMonth.getMonth()+1).padStart(2,'0')+'-'+String(day).padStart(2,'0');return this.publicEvents.filter(e=>e.date===date)}
  changeCalendarMonth(offset:number):void{this.calendarMonth=new Date(this.calendarMonth.getFullYear(),this.calendarMonth.getMonth()+offset,1)}
- goSite(page:'home'|'events'|'login'|'member'|'admin'|'judge'):void{location.assign(location.pathname+location.search+(page==='home'?'':'#'+page))}
+ goSite(page:'home'|'events'|'login'|'member'|'admin'|'judge'):void{const url=new URL(location.href);url.searchParams.delete('event');url.hash=page==='home'?'':'#'+page;location.assign(url.pathname+url.search+url.hash)}
  navigateSite(page:'home'|'events'|'login'|'member'|'admin'|'judge'):void{
    this.sitePage=page;
    if(!this.participantView)history.replaceState(history.state,'',location.pathname+location.search+(page==='home'?'':'#'+page));
@@ -90,7 +90,7 @@ export class AppComponent{
    finally{this.authBusy=false;this.cdr.detectChanges()}
  }
  async logoutStaff():Promise<void>{
-   try{await this.cloudRegistration.signOutStaff();this.staffRole='none';this.staffSignedIn=false;this.cloudEvents=[];this.eventOwner=false;this.authMessage='已登出';this.staffView='login';this.sitePage='login';this.updateStaffUrl()}
+   try{await this.cloudRegistration.signOutStaff();this.staffRole='none';this.staffSignedIn=false;this.cloudEvents=[];this.eventOwner=false;this.authMessage='已登出';this.staffView='login';this.sitePage='login';if(this.participantView){this.goSite('login');return}this.updateStaffUrl()}
    catch(error){this.authMessage='登出失敗：'+String(error)}
    this.cdr.detectChanges();
  }
