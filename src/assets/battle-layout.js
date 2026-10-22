@@ -63,8 +63,23 @@
     /* Palette refinements: neutral recording, dark reset text, non-orange fail marks. */
     .battle-modal>.battle-toolbar .toolbar-countdown{background:#31584d!important;border:2px solid #31584d!important;color:#fff!important;-webkit-text-fill-color:#fff!important}
     .battle-modal .reset-btn{background:#e9dfad!important;color:#24362e!important;-webkit-text-fill-color:#24362e!important;text-shadow:none!important}
-    .battle-modal .battle-side.player-a .launch-fail-btn .fail-marks i.on{background:#28584c!important;border-color:#28584c!important;box-shadow:inset 0 0 0 2px #9dc9b8!important}
-    .battle-modal .battle-side.player-b .launch-fail-btn .fail-marks i.on{background:#69468c!important;border-color:#69468c!important;box-shadow:inset 0 0 0 2px #bba0d4!important}
+    /* Identical LED frame on both sides; only the player's active center color differs. */
+    .battle-modal .battle-side .launch-fail-btn .fail-marks i{
+      box-sizing:border-box!important;width:32px!important;height:32px!important;
+      border:3px solid #87aaa3!important;border-radius:50%!important;
+      background:radial-gradient(circle at 40% 35%,#f7f8f8 0%,#c9d1d1 42%,#879b98 100%)!important;
+      box-shadow:inset 0 0 4px rgba(32,60,55,.5),0 1px 2px rgba(0,0,0,.15)!important
+    }
+    .battle-modal .battle-side.player-a .launch-fail-btn .fail-marks i.on{
+      border-color:#87aaa3!important;
+      background:radial-gradient(circle at 40% 35%,#7fc5b6 0%,#198776 58%,#12665c 100%)!important;
+      box-shadow:inset 0 0 0 2px rgba(255,255,255,.35),inset 0 0 5px rgba(10,70,60,.35),0 1px 2px rgba(0,0,0,.15)!important
+    }
+    .battle-modal .battle-side.player-b .launch-fail-btn .fail-marks i.on{
+      border-color:#87aaa3!important;
+      background:radial-gradient(circle at 40% 35%,#ac83c8 0%,#8050a6 58%,#69428e 100%)!important;
+      box-shadow:inset 0 0 0 2px rgba(255,255,255,.35),inset 0 0 5px rgba(50,20,80,.35),0 1px 2px rgba(0,0,0,.15)!important
+    }
     .battle-modal .battle-side.player-a .finish-btn:active,.battle-modal .battle-side.player-a .finish-btn:focus:not(:focus-visible){filter:none!important;background:#e4f5f0!important;box-shadow:inset 0 0 0 3px #168f7b!important}
     .battle-modal .battle-side.player-b .finish-btn:active,.battle-modal .battle-side.player-b .finish-btn:focus:not(:focus-visible){filter:none!important;background:#f0e8fa!important;box-shadow:inset 0 0 0 3px #8752b0!important}
     /* Keep players' positions and names; swap the green/purple identity palette. */
