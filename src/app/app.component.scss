@@ -1222,3 +1222,10 @@
   border-color:#7c9b94!important;
   box-shadow:inset 0 2px 4px #ffffff70,inset 0 -3px 5px #174c4355,0 1px 3px #0003!important;
 }
+
+/* Champion is the terminal node of the same horizontally scrollable bracket. */
+.bracket-champion-round{width:190px;flex:0 0 190px;display:flex;flex-direction:column}
+.bracket-champion-round h4{text-align:center;color:#b88600;margin:0 0 12px;white-space:nowrap}
+.bracket-champion-slot{flex:1;display:flex;align-items:center;justify-content:flex-start;min-height:94px}
+.bracket-champion-node{position:relative;margin-left:43px;min-width:100px;max-width:135px;padding:15px 12px;border-radius:10px;background:#ffd83d;color:#1d2729;font-size:22px;font-weight:900;text-align:center;overflow-wrap:anywhere;box-shadow:0 4px 14px #0002}
+.bracket-champion-node:before{content:'';position:absolute;left:-43px;top:50%;width:43px;height:2px;background:#ffd83d;box-shadow:0 0 7px #ffd83d88}
