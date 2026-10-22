@@ -1295,3 +1295,9 @@
   white-space:nowrap;
 }
 
+
+/* Member history: white event titles and distinct results for each player. */
+.site-member .site-event-row h3{color:var(--spin-paper)}
+.site-member .member-player-result{margin-top:10px}
+.site-member .member-player-result+ .member-player-result{border-top:1px solid #35373a;padding-top:10px}
+.site-member .member-player-result p{margin:4px 0}
