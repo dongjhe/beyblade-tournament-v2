@@ -143,3 +143,21 @@ app-root .battle-overlay .battle-decision-row button.draw-btn:not(:disabled){
 .recording-mode-overlay .recording-player:last-child .recording-fail i.active{
   background:#8650b2!important;border-color:#8650b2!important;box-shadow:none!important
 }
+
+
+/* Camera recording scoreboard: center and emphasize both player names. */
+.recording-mode-overlay .recording-scoreboard>.recording-player>strong,
+.recording-mode-overlay .recording-scoreboard>.recording-player:first-child>strong,
+.recording-mode-overlay .recording-scoreboard>.recording-player:last-child>strong{
+  text-align:center!important;
+  justify-self:center!important;
+  font-weight:900!important;
+  font-size:clamp(14px,2vw,20px)!important;
+  line-height:1.2!important;
+}
+@media(max-width:760px){
+  .recording-mode-overlay .recording-scoreboard>.recording-player>strong{
+    text-align:center!important;
+    font-size:15px!important;
+  }
+}
