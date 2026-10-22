@@ -62,7 +62,19 @@ export class AppComponent{
    finally{this.memberHistoryLoading=false;this.cdr.detectChanges()}
  }
  openPublicEvent(id:string):void{if(this.staffRole==='judge'&&!this.judgeAssignedEventIds.includes(id))return;location.assign(location.pathname+'?event='+encodeURIComponent(id))}
- staffRoleReady=false;authEmail='';authPassword='';authConfirmPassword='';showSignup=false;authBusy=false;authMessage='';staffEmail='';staffSignedIn=false;staffRole:'admin'|'judge'|'member'|'pending'|'none'='none';staffMembers:{uid:string;email:string;role:string;assignedEventIds:string[]}[]=[];judgeAssignedEventIds:string[]=[];judgeAssignmentBusy=false;judgeAssignmentMessage='';;staffRoleBusy=false;staffView:'login'|'dashboard'|'judge'|'pending'='login';
+ staffRoleReady=false;authEmail='';authPassword='';authConfirmPassword='';showSignup=false;authBusy=false;authMessage='';staffEmail='';staffSignedIn=false;staffRole:'admin'|'judge'|'member'|'pending'|'none'='none';staffMembers:{uid:string;email:string;role:string;assignedEventIds:string[]}[]=[];
+ staffMemberTab:'admin'|'judge'|'member'='admin';
+ get filteredStaffMembers():{uid:string;email:string;role:string;assignedEventIds:string[]}[]{
+   return this.staffMembers.filter(member=>this.staffMemberTab==='member'
+     ? member.role!=='admin'&&member.role!=='judge'
+     : member.role===this.staffMemberTab);
+ }
+ staffMemberCount(tab:'admin'|'judge'|'member'):number{
+   return this.staffMembers.filter(member=>tab==='member'
+     ? member.role!=='admin'&&member.role!=='judge'
+     : member.role===tab).length;
+ }
+judgeAssignedEventIds:string[]=[];judgeAssignmentBusy=false;judgeAssignmentMessage='';;staffRoleBusy=false;staffView:'login'|'dashboard'|'judge'|'pending'='login';
  get canManageEvents():boolean{return this.staffSignedIn&&this.staffRole==='admin'}
  async refreshStaffRole():Promise<void>{
    try{
