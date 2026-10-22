@@ -20,7 +20,7 @@ export class AppComponent{
  }
  publicEvents:CloudEvent[]=[];publicEventsLoading=false;publicEventsError='';
  calendarMonth=new Date(new Date().getFullYear(),new Date().getMonth(),1);
- memberHistory:{event:CloudEvent;players:string[];wins:number;losses:number;scored:number}[]=[];
+ memberHistory:{event:CloudEvent;players:{name:string;wins:number;losses:number;scored:number}[]}[]=[];
  memberHistoryLoading=false;memberHistoryError='';
  get calendarTitle():string{return this.calendarMonth.toLocaleDateString('zh-TW',{year:'numeric',month:'long'})}
  get calendarCells():(number|null)[]{const y=this.calendarMonth.getFullYear(),m=this.calendarMonth.getMonth(),offset=new Date(y,m,1).getDay(),days=new Date(y,m+1,0).getDate();return [...Array.from({length:offset},()=>null),...Array.from({length:days},(_,i)=>i+1)]}
