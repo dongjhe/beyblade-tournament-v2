@@ -1101,3 +1101,58 @@
 :host .battle-overlay .battle-decision-row > button.draw-btn:not(:disabled):is(:hover,:focus-visible,:active){
   background:#b6c4bc!important;background-color:#b6c4bc!important;border-color:#b6c4bc!important
 }
+
+
+/* Fix desktop battle controls: keep both decision buttons equal-width and
+   the next-match action spanning the entire centre column. */
+@media (min-width:761px) {
+  :host .battle-overlay .battle-center{
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:stretch!important;
+    min-width:0!important;
+  }
+  :host .battle-overlay .battle-decision-row{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+    width:100%!important;
+    gap:10px!important;
+    align-items:stretch!important;
+  }
+  :host .battle-overlay .battle-decision-row > button{
+    position:static!important;
+    grid-column:auto!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    margin:0!important;
+    transform:none!important;
+    justify-self:stretch!important;
+  }
+  :host .battle-overlay .battle-tools{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr)!important;
+    width:100%!important;
+    max-width:none!important;
+    gap:0!important;
+  }
+  :host .battle-overlay .battle-tools > .launch-fail-btn{display:none!important}
+  :host .battle-overlay .battle-reset-group{
+    display:block!important;
+    grid-column:1 / -1!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+  }
+  :host .battle-overlay .battle-reset-group > .next-battle-btn{
+    display:block!important;
+    position:static!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    min-height:56px!important;
+    margin:0!important;
+    transform:none!important;
+    box-sizing:border-box!important;
+  }
+}
