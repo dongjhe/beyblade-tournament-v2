@@ -1209,15 +1209,16 @@
 :host .battle-overlay .battle-arena.sides-swapped .battle-side.right-side .launch-fail-btn span{color:#127e70!important;-webkit-text-fill-color:#127e70!important}
 
 
-/* Launch-failure lamps follow the actual player after swapping sides.
-   The battle panel uses .on (recording mode uses .active). */
+/* Swapping players changes the lamp's accent only, not its original 3D shape. */
 :host .battle-overlay .battle-arena.sides-swapped .battle-side:not(.right-side) .launch-fail-btn .fail-marks i.on,
 :host .battle-overlay .battle-arena.sides-swapped .battle-tools > .launch-fail-btn:first-child .fail-marks i.on{
-  background:#8650b2!important;border-color:#8650b2!important;
-  box-shadow:none!important;
+  background:radial-gradient(circle at 38% 30%,#c7a9e1 0%,#9d6bc2 42%,#8650b2 75%,#6b3e91 100%)!important;
+  border-color:#7c9b94!important;
+  box-shadow:inset 0 2px 4px #ffffff70,inset 0 -3px 5px #41245a55,0 1px 3px #0003!important;
 }
 :host .battle-overlay .battle-arena.sides-swapped .battle-side.right-side .launch-fail-btn .fail-marks i.on,
 :host .battle-overlay .battle-arena.sides-swapped .battle-tools > .launch-fail-btn:last-child .fail-marks i.on{
-  background:#138878!important;border-color:#138878!important;
-  box-shadow:none!important;
+  background:radial-gradient(circle at 38% 30%,#a2dfd0 0%,#46ad9c 42%,#138878 75%,#0e655a 100%)!important;
+  border-color:#7c9b94!important;
+  box-shadow:inset 0 2px 4px #ffffff70,inset 0 -3px 5px #174c4355,0 1px 3px #0003!important;
 }
