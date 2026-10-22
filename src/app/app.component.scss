@@ -1207,3 +1207,17 @@
 :host .battle-overlay .battle-arena.sides-swapped .battle-side:not(.right-side) .launch-fail-btn span{color:#714396!important;-webkit-text-fill-color:#714396!important}
 :host .battle-overlay .battle-arena.sides-swapped .battle-side.right-side .finish-btn :is(b,small,strong),
 :host .battle-overlay .battle-arena.sides-swapped .battle-side.right-side .launch-fail-btn span{color:#127e70!important;-webkit-text-fill-color:#127e70!important}
+
+
+/* Launch-failure lamps follow the actual player after swapping sides.
+   The battle panel uses .on (recording mode uses .active). */
+:host .battle-overlay .battle-arena.sides-swapped .battle-side:not(.right-side) .launch-fail-btn .fail-marks i.on,
+:host .battle-overlay .battle-arena.sides-swapped .battle-tools > .launch-fail-btn:first-child .fail-marks i.on{
+  background:#8650b2!important;border-color:#8650b2!important;
+  box-shadow:none!important;
+}
+:host .battle-overlay .battle-arena.sides-swapped .battle-side.right-side .launch-fail-btn .fail-marks i.on,
+:host .battle-overlay .battle-arena.sides-swapped .battle-tools > .launch-fail-btn:last-child .fail-marks i.on{
+  background:#138878!important;border-color:#138878!important;
+  box-shadow:none!important;
+}
