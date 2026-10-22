@@ -300,6 +300,12 @@ export class AppComponent{
  get myScheduledMatchCount():number{return this.publicMatches.filter(m=>this.myRegistrations.some(r=>r.name.trim()===m.a?.trim()||r.name.trim()===m.b?.trim())).length}
  get publicRounds():number[]{const matches=this.publicMatches;const max=Math.max(0,...matches.map(m=>Number(m.round)||0));return Array.from({length:max},(_,i)=>i+1)}
  publicRoundMatches(round:number):Match[]{return this.publicMatches.filter(m=>m.round===round)}
+ get publicChampion():string|null{
+   const last=this.publicRounds.at(-1);
+   if(last===undefined)return null;
+   const finals=this.publicRoundMatches(last);
+   return finals.length===1?this.publicMatchWinner(finals[0]):null;
+ }
  publicMatchWinner(m:Match):string|null{if(!m.a)return m.b;if(!m.b)return m.a;const a=m.sa??0,b=m.sb??0;return Math.max(a,b)>=4&&a!==b?(a>b?m.a:m.b):null}
  get publicStandings():Standing[]{
    const table=new Map<string,Standing>();for(const name of this.publicSchedule?.players??[])table.set(name,{name,wins:0,losses:0,scored:0,against:0});
