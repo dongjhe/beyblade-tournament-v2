@@ -104,3 +104,42 @@ app-root .battle-overlay .battle-decision-row button.draw-btn:not(:disabled){
   background:#c5d0ca!important;background-color:#c5d0ca!important;background-image:none!important;
   color:#20332c!important;-webkit-text-fill-color:#20332c!important;border:2px solid #c5d0ca!important
 }
+
+
+/* Recording camera scoreboard: match the light teal / lavender battle-scoring palette. */
+.recording-mode-overlay .recording-scoreboard,
+.recording-mode-overlay.recording-live .recording-scoreboard{
+  background:#f3f5f1!important;border-top:2px solid #dce6df!important;
+  box-shadow:0 -6px 20px rgba(31,51,45,.12)!important;color:#24372f!important
+}
+.recording-mode-overlay .recording-score{color:#263b35!important;text-shadow:none!important}
+.recording-mode-overlay .recording-scoreboard>.recording-player:first-child>strong{color:#167e70!important;text-shadow:none!important}
+.recording-mode-overlay .recording-scoreboard>.recording-player:last-child>strong{color:#8650b2!important;text-shadow:none!important}
+.recording-mode-overlay .recording-scoreboard>.recording-player:first-child .recording-finish-row button,
+.recording-mode-overlay .recording-scoreboard>.recording-player:first-child .recording-fail{
+  background:#e5f4ef!important;color:#138878!important;box-shadow:none!important;
+  border:2px solid #b7ded4!important
+}
+.recording-mode-overlay .recording-scoreboard>.recording-player:last-child .recording-finish-row button,
+.recording-mode-overlay .recording-scoreboard>.recording-player:last-child .recording-fail{
+  background:#f0eafa!important;color:#8650b2!important;box-shadow:none!important;
+  border:2px solid #d8c2ed!important
+}
+.recording-mode-overlay .recording-scoreboard>.recording-player:first-child .recording-finish-row button:is(:active,:focus-visible),
+.recording-mode-overlay .recording-scoreboard>.recording-player:first-child .recording-fail:is(:active,:focus-visible){
+  background:#e5f4ef!important;border-color:#138878!important;outline:1px solid #138878!important
+}
+.recording-mode-overlay .recording-scoreboard>.recording-player:last-child .recording-finish-row button:is(:active,:focus-visible),
+.recording-mode-overlay .recording-scoreboard>.recording-player:last-child .recording-fail:is(:active,:focus-visible){
+  background:#f0eafa!important;border-color:#8650b2!important;outline:1px solid #8650b2!important
+}
+.recording-mode-overlay .recording-fail i{
+  background:#e6eeeb!important;border:2px solid #8ba9a1!important;
+  box-shadow:inset 0 1px 4px #6c898033!important
+}
+.recording-mode-overlay .recording-player:first-child .recording-fail i.active{
+  background:#138878!important;border-color:#138878!important;box-shadow:none!important
+}
+.recording-mode-overlay .recording-player:last-child .recording-fail i.active{
+  background:#8650b2!important;border-color:#8650b2!important;box-shadow:none!important
+}
