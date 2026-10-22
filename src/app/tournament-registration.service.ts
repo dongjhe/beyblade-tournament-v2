@@ -137,6 +137,7 @@ export class TournamentRegistrationService {
     const ref=doc(db,'events',this.eventId);
     const snap=await getDoc(ref);
     if(!snap.exists()||snap.data()['ownerUid']!==user.uid)throw new Error('只有建立賽事的裝置可以管理報名');
+    if(open){const schedule=await getDoc(doc(db,'events',this.eventId,'public','schedule'));if(schedule.exists())throw new Error('已產生賽程，無法重新開放報名');}
     const { updateDoc } = await import('firebase/firestore');
     await updateDoc(ref,{open});
   }
@@ -150,6 +151,8 @@ export class TournamentRegistrationService {
       const current=Number(snap.data()['capacity']??64);
       const registered=Number(snap.data()['registrationCount']??0);
       if(!Number.isSafeInteger(capacity)||capacity<=current||capacity>64||capacity<registered)throw new Error('新名額必須大於目前上限，且最多 64 人');
+      const schedule=await tx.get(doc(db,'events',this.eventId,'public','schedule'));
+      if(schedule.exists())throw new Error('已產生賽程，無法增加名額或重新開放報名');
       tx.update(ref,{capacity,open:true});
     });
   }
