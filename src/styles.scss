@@ -196,3 +196,19 @@ app-root .battle-overlay .battle-decision-row button.draw-btn:not(:disabled){
     width:52px!important;height:52px!important;font-size:34px!important;
   }
 }
+
+
+/* GO SHOOT: warm beige with dark text, consistent with the battle controls. */
+.recording-mode-overlay .recording-go-btn{
+  background:#eaddae!important;
+  background-image:none!important;
+  border:2px solid #eaddae!important;
+  color:#26372f!important;
+  box-shadow:none!important;
+  text-shadow:none!important;
+}
+.recording-mode-overlay .recording-go-btn:is(:hover,:focus-visible,:active){
+  background:#dfcf96!important;
+  border-color:#dfcf96!important;
+  color:#26372f!important;
+}
