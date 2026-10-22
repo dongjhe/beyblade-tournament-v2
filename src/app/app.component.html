@@ -7,9 +7,14 @@
 <ng-container *ngIf="!participantView && (sitePage==='login'||sitePage==='admin'||sitePage==='judge')"><section *ngIf="sitePage==='login' || (sitePage==='judge' && !staffSignedIn)" class="card staff-auth-panel">
 <div class="site-eyebrow">ACCOUNT / SIGN IN</div><h2>會員／工作登入<span class="site-title-slash">/</span></h2>
 <ng-container *ngIf="!staffSignedIn">
-<p class="muted">管理者可使用 admin、裁判可使用 dongjhe 搭配原密碼登入；其他會員仍可使用完整 Email。參賽者可透過 QR Code 免登入報名。</p>
-<div class="grid"><div><label for="staff-email">帳號／Email</label><input id="staff-email" type="text" [(ngModel)]="authEmail" autocomplete="username" placeholder="admin 或 dongjhe"></div><div><label for="staff-password">密碼</label><input id="staff-password" type="password" [(ngModel)]="authPassword" autocomplete="current-password" placeholder="至少 6 個字元" (keyup.enter)="loginStaff()"></div></div>
-<div class="actions"><button type="button" [disabled]="authBusy || !authEmail || !authPassword" (click)="loginStaff()">登入</button><button type="button" class="secondary" [disabled]="authBusy || !authEmail || authPassword.length<6" (click)="signupStaff()">建立帳號</button></div>
+<p class="muted">{{showSignup?'只需設定帳號與密碼即可註冊，不需要 Email。':'使用帳號與密碼登入；既有會員也可使用原本 Email。'}}</p>
+<div class="grid">
+<div><label for="staff-email">帳號</label><input id="staff-email" type="text" [(ngModel)]="authEmail" autocomplete="username" [placeholder]="showSignup?'4～20 個字元，英文、數字、底線':'請輸入帳號'"></div>
+<div><label for="staff-password">密碼</label><input id="staff-password" type="password" [(ngModel)]="authPassword" [attr.autocomplete]="showSignup?'new-password':'current-password'" placeholder="至少 6 個字元" (keyup.enter)="showSignup?signupStaff():loginStaff()"></div>
+<div *ngIf="showSignup"><label for="staff-confirm-password">確認密碼</label><input id="staff-confirm-password" type="password" [(ngModel)]="authConfirmPassword" autocomplete="new-password" placeholder="再次輸入密碼" (keyup.enter)="signupStaff()"></div>
+</div>
+<div class="actions" *ngIf="!showSignup"><button type="button" [disabled]="authBusy || !authEmail || !authPassword" (click)="loginStaff()">登入</button><button type="button" class="secondary" [disabled]="authBusy" (click)="showSignup=true;authMessage='';authPassword=''">建立帳號</button></div>
+<div class="actions" *ngIf="showSignup"><button type="button" [disabled]="authBusy || !authEmail || authPassword.length<6 || !authConfirmPassword" (click)="signupStaff()">註冊帳號</button><button type="button" class="secondary" [disabled]="authBusy" (click)="showSignup=false;authMessage='';authPassword='';authConfirmPassword=''">返回登入</button></div>
 </ng-container>
 <ng-container *ngIf="staffSignedIn"><div class="staff-session"><div><strong>{{staffEmail}}</strong><p class="muted">身分：{{staffRole==='admin'?'管理者':staffRole==='judge'?'裁判':staffRole==='member'?'一般會員':'待審核'}}</p></div><div class="actions"><button type="button" class="secondary" (click)="refreshStaffRole()">重新檢查權限</button><button type="button" class="secondary" (click)="logoutStaff()">登出</button></div></div>
 <p *ngIf="staffRole==='pending'" class="muted">此為舊版待審核帳號，仍可使用會員中心。需要裁判權限時請聯絡管理者。</p>
