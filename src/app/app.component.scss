@@ -1065,3 +1065,11 @@
 /* Next match: calm deep teal instead of fluorescent green. */
 :host .battle-overlay .battle-reset-group .next-battle-btn:not(:disabled){background:#087d70!important;background-image:none!important;color:#fff!important;border:2px solid #087d70!important;box-shadow:none!important}
 :host .battle-overlay .battle-reset-group .next-battle-btn:not(:disabled):is(:hover,:active,:focus-visible){background:#087d70!important;border-color:#13594f!important;box-shadow:none!important}
+
+/* Unified action palette: draw/replay, reset score and next match. */
+:host .battle-overlay .battle-decision-row .draw-btn,
+:host .battle-overlay .battle-decision-row .reset-btn,
+:host .battle-overlay .battle-reset-group .next-battle-btn:not(:disabled){background:#087d70!important;background-image:none!important;color:#fff!important;-webkit-text-fill-color:#fff!important;border:2px solid #087d70!important;box-shadow:none!important}
+:host .battle-overlay .battle-decision-row .draw-btn:is(:hover,:focus-visible,:active),
+:host .battle-overlay .battle-decision-row .reset-btn:is(:hover,:focus-visible,:active),
+:host .battle-overlay .battle-reset-group .next-battle-btn:not(:disabled):is(:hover,:focus-visible,:active){background:#096b60!important;border-color:#096b60!important;color:#fff!important;-webkit-text-fill-color:#fff!important}
