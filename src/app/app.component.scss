@@ -1156,3 +1156,43 @@
     box-sizing:border-box!important;
   }
 }
+
+
+/* Desktop / landscape: keep Draw and Reset side-by-side just like portrait. */
+@media (min-width:761px) {
+  :host .battle-overlay .battle-arena .battle-center > .battle-decision-row{
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    grid-auto-flow:row!important;
+    align-items:stretch!important;
+    justify-items:stretch!important;
+    gap:10px!important;
+    width:100%!important;
+    max-width:none!important;
+    min-width:0!important;
+    flex-direction:row!important;
+  }
+  :host .battle-overlay .battle-arena .battle-center > .battle-decision-row > .draw-btn,
+  :host .battle-overlay .battle-arena .battle-center > .battle-decision-row > .reset-btn{
+    position:static!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    width:100%!important;
+    height:56px!important;
+    min-height:56px!important;
+    max-width:none!important;
+    min-width:0!important;
+    margin:0!important;
+    padding:8px!important;
+    transform:none!important;
+    grid-row:1!important;
+    grid-column:auto!important;
+    writing-mode:horizontal-tb!important;
+    white-space:nowrap!important;
+    border-radius:12px!important;
+    clip-path:none!important;
+  }
+  :host .battle-overlay .battle-arena .battle-center > .battle-decision-row > .draw-btn{grid-column:1!important;order:0!important}
+  :host .battle-overlay .battle-arena .battle-center > .battle-decision-row > .reset-btn{grid-column:2!important;order:1!important}
+}
