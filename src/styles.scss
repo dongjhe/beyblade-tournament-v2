@@ -161,3 +161,22 @@ app-root .battle-overlay .battle-decision-row button.draw-btn:not(:disabled){
     font-size:15px!important;
   }
 }
+
+
+/* Camera controls: align GO SHOOT and close with the current muted battle palette. */
+.recording-mode-overlay .recording-go-btn{
+  background:#087f73!important;background-image:none!important;
+  border:2px solid #087f73!important;border-radius:9px!important;
+  color:#fff!important;box-shadow:none!important;text-shadow:none!important;
+}
+.recording-mode-overlay .recording-go-btn:is(:hover,:focus-visible,:active){
+  background:#08695f!important;border-color:#08695f!important;
+}
+.recording-mode-overlay .recording-topbar button{
+  background:#e4ece6!important;background-image:none!important;
+  color:#263d35!important;border:0!important;border-radius:12px!important;
+  box-shadow:none!important;text-shadow:none!important;
+}
+.recording-mode-overlay .recording-topbar button:is(:hover,:focus-visible,:active){
+  background:#d3e0d7!important;color:#1d342b!important;
+}
