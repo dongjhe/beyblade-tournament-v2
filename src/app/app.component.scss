@@ -1318,8 +1318,13 @@
 .member-results-footer{display:flex;justify-content:flex-end;margin-top:22px}
 @media(max-width:760px){
   .site-member .site-event-row{grid-template-columns:minmax(0,1fr) auto}
-  .site-member .site-event-row .member-event-actions{flex-direction:column;align-items:stretch;gap:8px}
+  .site-member .site-event-row .member-event-actions{flex-direction:row;align-items:center;justify-content:flex-end;flex-wrap:nowrap;gap:8px}
   .site-member .site-event-row .member-event-actions button{font-size:13px;padding:10px 12px;min-width:0}
   .member-results-dialog{padding:18px}
   .member-results-list-row{align-items:flex-start;flex-direction:column;gap:5px}
 }
+
+/* Keep both member event actions side by side on narrow screens. */
+.site-member .site-event-row .member-event-actions{flex-direction:row;flex-wrap:nowrap;align-items:center;gap:8px}
+.site-member .site-event-row .member-event-actions button{white-space:nowrap}
+@media(max-width:760px){.site-member .site-event-row .member-event-actions button{font-size:12px;padding:10px 8px}}
