@@ -59,6 +59,29 @@
       .battle-modal>.battle-arena{grid-template-columns:minmax(0,1fr) minmax(240px,1.08fr) minmax(0,1fr)!important;grid-template-areas:'left center right'!important;grid-template-rows:auto!important}
       .battle-modal>.battle-arena>.battle-center,.battle-modal>.battle-arena>.battle-side.visual-left,.battle-modal>.battle-arena>.battle-side.visual-right{grid-row:1!important}
     }
+
+    /* Palette refinements: neutral recording, dark reset text, non-orange fail marks. */
+    .battle-modal>.battle-toolbar .toolbar-countdown{background:#31584d!important;border:2px solid #31584d!important;color:#fff!important;-webkit-text-fill-color:#fff!important}
+    .battle-modal .reset-btn{background:#e9dfad!important;color:#24362e!important;-webkit-text-fill-color:#24362e!important;text-shadow:none!important}
+    .battle-modal .battle-side.player-a .launch-fail-btn .fail-marks i.on{background:#28584c!important;border-color:#28584c!important;box-shadow:inset 0 0 0 2px #9dc9b8!important}
+    .battle-modal .battle-side.player-b .launch-fail-btn .fail-marks i.on{background:#69468c!important;border-color:#69468c!important;box-shadow:inset 0 0 0 2px #bba0d4!important}
+    .battle-modal .battle-side.player-a .finish-btn:active,.battle-modal .battle-side.player-a .finish-btn:focus:not(:focus-visible){filter:none!important;background:#e4f5f0!important;box-shadow:inset 0 0 0 3px #168f7b!important}
+    .battle-modal .battle-side.player-b .finish-btn:active,.battle-modal .battle-side.player-b .finish-btn:focus:not(:focus-visible){filter:none!important;background:#f0e8fa!important;box-shadow:inset 0 0 0 3px #8752b0!important}
+    /* Keep players' positions and names; swap the green/purple identity palette. */
+    .battle-modal>.battle-arena.is-swapped .score-versus .player-a-score{order:1!important}
+    .battle-modal>.battle-arena.is-swapped .score-versus .player-b-score{order:3!important}
+    .battle-modal>.battle-arena.is-swapped .score-versus .player-a-score .big-score{background:#efe5f8!important;border-color:#b18bd8!important;color:#8150a9!important;-webkit-text-fill-color:#8150a9!important}
+    .battle-modal>.battle-arena.is-swapped .score-versus .player-b-score .big-score{background:#dbf3ec!important;border-color:#44baa6!important;color:#168676!important;-webkit-text-fill-color:#168676!important}
+    .battle-modal>.battle-arena.is-swapped .score-versus .player-a-score .score-player-name{color:#8150a9!important}
+    .battle-modal>.battle-arena.is-swapped .score-versus .player-b-score .score-player-name{color:#168676!important}
+    .battle-modal>.battle-arena.is-swapped>.battle-side.player-a{grid-area:left!important;grid-column:1!important}
+    .battle-modal>.battle-arena.is-swapped>.battle-side.player-b{grid-area:right!important;grid-column:3!important}
+    .battle-modal>.battle-arena.is-swapped>.battle-side.player-a .finish-btn{background:#f0e8fa!important;border-color:#b18bd8!important}
+    .battle-modal>.battle-arena.is-swapped>.battle-side.player-b .finish-btn{background:#e4f5f0!important;border-color:#44baa6!important}
+    @media(max-width:760px) and (orientation:portrait){
+      .battle-modal>.battle-arena.is-swapped>.battle-side.player-a{grid-area:left!important;grid-column:1!important;grid-row:2!important}
+      .battle-modal>.battle-arena.is-swapped>.battle-side.player-b{grid-area:right!important;grid-column:2!important;grid-row:2!important}
+    }
   `;document.head.appendChild(style);
   function setupBattle(modal){if(modal.dataset.layoutReady==='17')return;modal.dataset.layoutReady='17';let swapped=false;const arena=modal.querySelector('.battle-arena'),center=modal.querySelector('.battle-center'),sides=[...modal.querySelectorAll('.battle-side')],score=modal.querySelector('.score-versus'),tools=modal.querySelector('.battle-tools'),originalCountdown=modal.querySelector('.countdown-btn'),originalClose=modal.querySelector('.battle-close');if(!arena||!center||sides.length!==2||!score||!tools||!originalCountdown)return;const a=sides[0],b=sides[1];a.classList.add('player-a','visual-left');b.classList.add('player-b','visual-right');const boxes=[...score.children].filter(x=>x.tagName==='DIV');if(boxes[0])boxes[0].classList.add('player-a-score');if(boxes[1])boxes[1].classList.add('player-b-score');const fails=[...tools.querySelectorAll('.launch-fail-btn')];if(fails[0])a.appendChild(fails[0]);if(fails[1])b.appendChild(fails[1]);const bar=document.createElement('div');bar.className='battle-toolbar';modal.insertBefore(bar,arena);const swap=document.createElement('button');swap.type='button';swap.className='swap-side-btn';swap.textContent='⇄ 交換位置';bar.appendChild(swap);const go=document.createElement('button');go.type='button';go.className='toolbar-countdown';go.textContent='📹 3・2・1 GO SHOOT!';bar.appendChild(go);const stop=document.createElement('button');stop.type='button';stop.className='video-pause-btn';stop.textContent='⏸ 暫停';bar.appendChild(stop);go.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();originalCountdown.click()});stop.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();const draw=modal.querySelector('.draw-btn');if(draw)draw.click()});swap.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();swapped=!swapped;arena.classList.toggle('is-swapped',swapped);score.classList.toggle('swapped',swapped);a.classList.toggle('visual-left',!swapped);a.classList.toggle('visual-right',swapped);b.classList.toggle('visual-left',swapped);b.classList.toggle('visual-right',!swapped)})}
   const observer=new MutationObserver(()=>document.querySelectorAll('.battle-modal').forEach(setupBattle));observer.observe(document.body,{childList:true,subtree:true});document.querySelectorAll('.battle-modal').forEach(setupBattle);
