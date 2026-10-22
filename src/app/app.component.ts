@@ -58,7 +58,7 @@ export class AppComponent{
    finally{this.memberHistoryLoading=false;this.cdr.detectChanges()}
  }
  openPublicEvent(id:string):void{if(this.staffRole==='judge'&&!this.judgeAssignedEventIds.includes(id))return;location.assign(location.pathname+'?event='+encodeURIComponent(id))}
- authEmail='';authPassword='';authBusy=false;authMessage='';staffEmail='';staffSignedIn=false;staffRole:'admin'|'judge'|'member'|'pending'|'none'='none';staffMembers:{uid:string;email:string;role:string;assignedEventIds:string[]}[]=[];judgeAssignedEventIds:string[]=[];judgeAssignmentBusy=false;judgeAssignmentMessage='';;staffRoleBusy=false;staffView:'login'|'dashboard'|'judge'|'pending'='login';
+ staffRoleReady=false;authEmail='';authPassword='';authBusy=false;authMessage='';staffEmail='';staffSignedIn=false;staffRole:'admin'|'judge'|'member'|'pending'|'none'='none';staffMembers:{uid:string;email:string;role:string;assignedEventIds:string[]}[]=[];judgeAssignedEventIds:string[]=[];judgeAssignmentBusy=false;judgeAssignmentMessage='';;staffRoleBusy=false;staffView:'login'|'dashboard'|'judge'|'pending'='login';
  get canManageEvents():boolean{return this.staffSignedIn&&this.staffRole==='admin'}
  async refreshStaffRole():Promise<void>{
    try{
@@ -69,6 +69,7 @@ export class AppComponent{
      if(this.staffSignedIn && this.sitePage==='member')void this.refreshMemberHistory();
      this.updateStaffUrl()
    }catch(error){this.authMessage='讀取帳號權限失敗：'+String(error)}
+   this.staffRoleReady=true;
    this.cdr.detectChanges();
  }
  private updateStaffUrl():void{
