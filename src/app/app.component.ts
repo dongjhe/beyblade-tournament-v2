@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, ElementRef, NgZone, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { CloudEvent, CloudRegistration, TournamentRegistrationService } from './tournament-registration.service';
+import { CloudEvent, EventDetails, CloudRegistration, TournamentRegistrationService } from './tournament-registration.service';
 
 declare global { interface DOMStringMap { finish?: string; fail?: string; } }
 
@@ -232,6 +232,33 @@ judgeAssignedEventIds:string[]=[];judgeAssignmentBusy=false;judgeAssignmentMessa
  if(!this.canManageEvents){this.registrationMessage='只有管理者可以建立賽事';return}if(this.eventBusy)return;const name=this.newEventTitle.trim();if(!name||name.length>80){this.registrationMessage='賽事名稱須為 1 至 80 字';return}if(!/^\d{4}-\d{2}-\d{2}$/.test(this.newEventDate)||!this.newEventLocation.trim()||this.newEventLocation.trim().length>100){this.registrationMessage='請填寫比賽日期與地點（地點最多 100 字）';return}if(this.newEventDateExpired){this.registrationMessage='比賽日期不可早於今天，請選擇今天或未來日期';return}if(!Number.isSafeInteger(this.newEventFee)||this.newEventFee<0||this.newEventFee>1000000||this.newEventNotes.length>500||!Number.isSafeInteger(this.newEventCapacity)||this.newEventCapacity<2||this.newEventCapacity>64){this.registrationMessage='報名費須為 0 至 1000000 元整數，備註最多 500 字';return}
  this.persistCurrentEventSchedule();this.eventBusy=true;try{const id=await this.cloudRegistration.createEvent(name,this.newEventMode,this.newEventDate,this.newEventLocation.trim(),this.newEventFee,this.newEventNotes.trim(),this.newEventCapacity,this.newEventTime);await this.cloudRegistration.useEvent(id);this.eventId=id;this.title=name;this.mode=this.newEventMode;this.eventDate=this.newEventDate;this.eventLocation=this.newEventLocation;this.eventFee=this.newEventFee;this.eventNotes=this.newEventNotes.trim();this.eventCapacity=this.newEventCapacity;this.started=false;this.matches=[];this.players=[];this.eventOwner=true;this.registrationOpen=true;this.registrationReady=false;this.eventLink=location.origin+location.pathname+'?event='+encodeURIComponent(id);this.cloudRegistrations=[];this.names=Array.from({length:this.count},()=> '');await this.connectRegistrations();await this.refreshCloudEvents();await this.updateEventQr();this.newCreatedEventLink=this.eventLink;this.newCreatedEventQrCode=this.eventQrCode;this.newEventTitle='';this.newEventDate='';this.newEventLocation='';this.newEventFee=0;this.newEventNotes='';this.newEventCapacity=16;this.newEventMode='league';this.registrationMessage='賽事建立成功'}
  catch(error){this.registrationMessage='建立賽事失敗：'+String(error)}finally{this.eventBusy=false;this.cdr.detectChanges()}
+ }
+ editingEventId='';eventEditBusy=false;eventEditLocked=false;eventEditMessage='';
+ eventEdit:EventDetails={title:'',mode:'league',date:'',time:'',location:'',fee:0,notes:'',capacity:16};
+ async editListedEvent(event:CloudEvent):Promise<void>{
+   if(!this.canManageEvents || this.eventEditBusy || this.eventBusy || this.eventSelectBusy)return;
+   this.eventEditBusy=true;this.eventEditMessage='';this.registrationMessage='';
+   try{
+     const [latest,schedule]=await Promise.all([this.cloudRegistration.loadEvent(event.id),this.cloudRegistration.readSchedule(event.id)]);
+     this.eventEdit={title:latest.title,mode:latest.mode,date:latest.date,time:latest.time??'',location:latest.location,fee:latest.fee,notes:latest.notes,capacity:latest.capacity};
+     this.eventEditLocked=!!schedule;this.editingEventId=event.id;
+   }catch(error){this.registrationMessage='讀取報名表失敗：'+String(error)}
+   finally{this.eventEditBusy=false;this.cdr.detectChanges()}
+ }
+ cancelEventEdit():void{if(!this.eventEditBusy){this.editingEventId='';this.eventEditMessage=''}}
+ async saveEventEdit():Promise<void>{
+   if(!this.canManageEvents || !this.editingEventId || this.eventEditBusy)return;
+   const id=this.editingEventId,details={...this.eventEdit};
+   this.eventEditBusy=true;this.eventEditMessage='';
+   try{
+     await this.cloudRegistration.updateEventDetails(id,details);
+     const updated={...details,title:details.title.trim(),location:details.location.trim(),notes:details.notes.trim()};
+     this.cloudEvents=this.cloudEvents.map(event=>event.id===id?{...event,...updated}:event);
+     this.publicEvents=this.publicEvents.map(event=>event.id===id?{...event,...updated}:event);
+     if(this.eventId===id){this.title=updated.title;this.mode=updated.mode;this.eventDate=updated.date;this.eventTime=updated.time??'';this.eventLocation=updated.location;this.eventFee=updated.fee;this.eventNotes=updated.notes;this.eventCapacity=updated.capacity;}
+     this.editingEventId='';this.registrationMessage='報名表已更新，原報名連結與名單保留';
+   }catch(error){this.eventEditMessage='儲存失敗：'+String(error)}
+   finally{this.eventEditBusy=false;this.cdr.detectChanges()}
  }
  async deleteCloudEvent():Promise<void>{
    if(!this.eventOwner||this.eventId==='main'||this.eventBusy)return;
@@ -622,3 +649,4 @@ judgeAssignedEventIds:string[]=[];judgeAssignmentBusy=false;judgeAssignmentMessa
  if(button)button.textContent=this.recording?this.recordingPaused?'▶ 繼續錄影':'⏸ 暫停':'📹 3・2・1 GO SHOOT!';
 }
 }
+

@@ -4,6 +4,7 @@ import { getAuth, signInAnonymously, createUserWithEmailAndPassword, signInWithE
 import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, getFirestore, onSnapshot, query, where, serverTimestamp, setDoc, updateDoc, runTransaction, Unsubscribe } from 'firebase/firestore';
 
 export interface CloudRegistration { uid: string; name: string; ownerUid: string; }
+export type EventDetails = Pick<CloudEvent, 'title'|'mode'|'date'|'time'|'location'|'fee'|'notes'|'capacity'>;
 export interface CloudEvent { id:string; title:string; mode:'league'|'knockout'; open:boolean; date:string; time?:string; location:string; fee:number; notes:string; capacity:number; }
 const app = initializeApp({
   apiKey: 'AIzaSyAPWrWFXHPyIWaS7xw7thwVwtgi4rZ4xTs',
@@ -123,6 +124,27 @@ export class TournamentRegistrationService {
     const eventRef = doc(collection(db, 'events'));
     await setDoc(eventRef, { title, mode, date, time, location, fee, notes, capacity, registrationCount:0, ownerUid: user.uid, open: true, deleted:false, createdAt: serverTimestamp() });
     return eventRef.id;
+  }
+  async updateEventDetails(eventId:string, details:EventDetails):Promise<void>{
+    const user=auth.currentUser;
+    if(!user || user.isAnonymous || await this.getStaffRole()!=='admin')throw new Error('只有管理者可以修改報名表');
+    const title=details.title.trim(),location=details.location.trim(),time=details.time??'';
+    if(!title || title.length>80 || !location || location.length>100 || !/^\d{4}-\d{2}-\d{2}$/.test(details.date)
+      || !/^$|^([01]\d|2[0-3]):[0-5]\d$/.test(time) || !['league','knockout'].includes(details.mode)
+      || !Number.isSafeInteger(details.fee) || details.fee<0 || details.fee>1000000
+      || details.notes.length>500 || !Number.isSafeInteger(details.capacity) || details.capacity<2 || details.capacity>64)
+      throw new Error('請檢查名稱、日期時間、地點、費用、人數上限及備註');
+    const ref=doc(db,'events',eventId);
+    await runTransaction(db,async tx=>{
+      const event=await tx.get(ref);
+      const schedule=await tx.get(doc(db,'events',eventId,'public','schedule'));
+      if(!event.exists() || event.data()['deleted']===true || event.data()['ownerUid']!==user.uid)
+        throw new Error('沒有管理此賽事的權限');
+      if(details.capacity<Number(event.data()['registrationCount']??0))throw new Error('人數上限不能少於目前已報名人數');
+      if(schedule.exists() && (details.mode!==event.data()['mode'] || details.capacity!==Number(event.data()['capacity']??64)))
+        throw new Error('已產生賽程，無法修改賽制或人數上限');
+      tx.update(ref,{title,mode:details.mode,date:details.date,time,location,fee:details.fee,notes:details.notes.trim(),capacity:details.capacity});
+    });
   }
   async loadEvent(eventId: string): Promise<{title:string;mode:'league'|'knockout';open:boolean;ownerUid:string;date:string;time?:string;location:string;fee:number;notes:string;capacity:number}> {
     if(!auth.currentUser)await signInAnonymously(auth);
@@ -292,3 +314,4 @@ export class TournamentRegistrationService {
     });
   }
 }
+
