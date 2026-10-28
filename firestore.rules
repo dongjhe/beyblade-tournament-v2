@@ -193,21 +193,24 @@ service cloud.firestore {
           && exists(/databases/$(database)/documents/events/$(eventId))
           && get(/databases/$(database)/documents/events/$(eventId)).data.open == true
           && get(/databases/$(database)/documents/events/$(eventId)).data.get('deleted', false) == false
-          && request.resource.data.keys().hasOnly(['uid', 'name', 'createdAt'])
+          && request.resource.data.keys().hasOnly(['uid', 'name', 'checkedIn', 'createdAt'])
           && request.resource.data.uid == request.auth.uid
           && request.resource.data.name is string
           && request.resource.data.name.size() >= 1
           && request.resource.data.name.size() <= 30
+          && request.resource.data.get('checkedIn', false) is bool
+          && request.resource.data.get('checkedIn', false) == false
           && request.resource.data.createdAt == request.time
           && (!get(/databases/$(database)/documents/events/$(eventId)).data.keys().hasAll(['capacity','registrationCount'])
             || getAfter(/databases/$(database)/documents/events/$(eventId)).data.registrationCount
               == get(/databases/$(database)/documents/events/$(eventId)).data.registrationCount + 1);
         allow update: if isAdmin()
           && get(/databases/$(database)/documents/events/$(eventId)).data.ownerUid == request.auth.uid
-          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name'])
-          && request.resource.data.name is string
-          && request.resource.data.name.size() >= 1
-          && request.resource.data.name.size() <= 30;
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name', 'checkedIn'])
+          && request.resource.data.get('name', resource.data.name) is string
+          && request.resource.data.get('name', resource.data.name).size() >= 1
+          && request.resource.data.get('name', resource.data.name).size() <= 30
+          && request.resource.data.get('checkedIn', resource.data.get('checkedIn', false)) is bool;
         allow delete: if (isAdmin()
           && get(/databases/$(database)/documents/events/$(eventId)).data.ownerUid == request.auth.uid)
           || (request.auth != null
@@ -224,11 +227,13 @@ service cloud.firestore {
       allow read: if request.auth != null;
       allow create: if request.auth != null
         && !isJudge()
-        && request.resource.data.keys().hasOnly(['uid', 'name', 'createdAt'])
+        && request.resource.data.keys().hasOnly(['uid', 'name', 'checkedIn', 'createdAt'])
         && request.resource.data.uid == request.auth.uid
         && request.resource.data.name is string
         && request.resource.data.name.size() >= 1
         && request.resource.data.name.size() <= 30
+        && request.resource.data.get('checkedIn', false) is bool
+        && request.resource.data.get('checkedIn', false) == false
         && request.resource.data.createdAt == request.time;
       allow update, delete: if false;
     }

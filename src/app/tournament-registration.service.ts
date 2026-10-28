@@ -3,7 +3,7 @@ import { initializeApp } from 'firebase/app';
 import { getAuth, signInAnonymously, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, EmailAuthProvider, linkWithCredential, User } from 'firebase/auth';
 import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, getFirestore, onSnapshot, query, where, serverTimestamp, setDoc, updateDoc, runTransaction, Unsubscribe } from 'firebase/firestore';
 
-export interface CloudRegistration { uid: string; name: string; ownerUid: string; }
+export interface CloudRegistration { uid: string; name: string; ownerUid: string; checkedIn: boolean; }
 export type EventDetails = Pick<CloudEvent, 'title'|'mode'|'date'|'time'|'registrationDeadline'|'location'|'fee'|'notes'|'capacity'>;
 export interface CloudEvent { id:string; title:string; mode:'league'|'knockout'; open:boolean; date:string; time?:string; registrationDeadline:string; fullAt?:number|null; location:string; fee:number; notes:string; capacity:number; registrationCount:number; }
 const app = initializeApp({
@@ -267,7 +267,12 @@ export class TournamentRegistrationService {
       if(!auth.currentUser)await signInAnonymously(auth);
       this.unsubscribe?.();
       this.unsubscribe = onSnapshot(collection(db, 'events', this.eventId, 'registrations'), snapshot => {
-        const names = snapshot.docs.map(d => ({ uid: d.id, name: String(d.data()['name'] ?? ''), ownerUid: String(d.data()['uid'] ?? '') }))
+        const names = snapshot.docs.map(d => ({
+          uid: d.id,
+          name: String(d.data()['name'] ?? ''),
+          ownerUid: String(d.data()['uid'] ?? ''),
+          checkedIn: d.data()['checkedIn'] === true
+        }))
           .filter(item => item.name.length > 0).sort((a, b) => a.name.localeCompare(b.name, 'zh-Hant'));
         this.zone.run(() => onNames(names));
       }, error => this.zone.run(() => onError(error.message)));
@@ -278,6 +283,10 @@ export class TournamentRegistrationService {
   async renameRegistration(registrationId:string,name:string):Promise<void>{
     if(await this.getStaffRole()!=='admin')throw new Error('只有管理者可以編輯報名名單');
     await updateDoc(doc(db,'events',this.eventId,'registrations',registrationId),{name});
+  }
+  async setRegistrationCheckedIn(registrationId:string, checkedIn:boolean):Promise<void>{
+    if(await this.getStaffRole()!=='admin')throw new Error('只有管理者可以更新報到狀態');
+    await updateDoc(doc(db,'events',this.eventId,'registrations',registrationId),{checkedIn});
   }
   async deleteRegistration(registrationId:string):Promise<void>{
     if(await this.getStaffRole()!=='admin')throw new Error('只有管理者可以刪除報名名單');
@@ -315,10 +324,10 @@ export class TournamentRegistrationService {
       const registrationDeadline=String(event.data()['registrationDeadline']??'');
       if(registrationDeadline&&localDateString()>registrationDeadline)throw new Error('報名已截止');
       const capacity=Number(event.data()['capacity']??64);
-      if(event.data()['registrationCount']===undefined){tx.set(registrationRef,{name,uid:user.uid,createdAt:serverTimestamp()});return;}
+    if(event.data()['registrationCount']===undefined){tx.set(registrationRef,{name,uid:user.uid,checkedIn:false,createdAt:serverTimestamp()});return;}
       const count=Number(event.data()['registrationCount']);
       if(count>=capacity)throw new Error('報名已額滿');
-      tx.set(registrationRef,{name,uid:user.uid,createdAt:serverTimestamp()});
+    tx.set(registrationRef,{name,uid:user.uid,checkedIn:false,createdAt:serverTimestamp()});
       tx.update(eventRef,{registrationCount:count+1,fullAt:count+1>=capacity?Date.now():null});
     });
   }

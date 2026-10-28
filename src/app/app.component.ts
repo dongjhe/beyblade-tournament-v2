@@ -510,6 +510,21 @@ judgeAssignedEventIds:string[]=[];judgeAssignmentBusy=false;judgeAssignmentMessa
    catch(error){this.registrationMessage='刪除失敗：'+String(error)}
    finally{this.registrationEditBusy=false;this.cdr.detectChanges()}
  }
+ async markRegistrationCheckedIn(entry:CloudRegistration):Promise<void>{
+  if(!this.canManageEvents||this.registrationEditBusy||entry.checkedIn)return;
+  this.registrationEditBusy=true;
+  try{await this.cloudRegistration.setRegistrationCheckedIn(entry.uid,true);this.registrationMessage='已確認報到：'+entry.name}
+  catch(error){this.registrationMessage='更新報到狀態失敗：'+String(error)}
+  finally{this.registrationEditBusy=false;this.cdr.detectChanges()}
+ }
+ async cancelRegistrationCheckedIn(entry:CloudRegistration):Promise<void>{
+  if(!this.canManageEvents||this.registrationEditBusy||!entry.checkedIn)return;
+  if(!confirm('確定取消「'+entry.name+'」的報到狀態？'))return;
+  this.registrationEditBusy=true;
+  try{await this.cloudRegistration.setRegistrationCheckedIn(entry.uid,false);this.registrationMessage='已取消報到：'+entry.name}
+  catch(error){this.registrationMessage='取消報到失敗：'+String(error)}
+  finally{this.registrationEditBusy=false;this.cdr.detectChanges()}
+ }
  rosterPage=1;rosterPageSize=10;
  get rosterPageCount():number{return Math.max(1,Math.ceil(this.cloudRegistrations.length/this.rosterPageSize))}
  get pagedRegistrations():CloudRegistration[]{const page=Math.min(this.rosterPage,this.rosterPageCount);return this.cloudRegistrations.slice((page-1)*this.rosterPageSize,page*this.rosterPageSize)}

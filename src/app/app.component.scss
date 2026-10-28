@@ -725,13 +725,30 @@
 
 /* Admin Firebase registration roster editing */
 :host .admin-registration-list{display:grid;gap:10px;margin:14px 0 22px}
-:host .admin-registration-row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 14px;border:1px solid #d9e2dd;background:#f8faf8;color:#1c2a30;min-width:0}
-:host .admin-registration-name{flex:1;min-width:0;overflow-wrap:anywhere;font-weight:700}
-:host .admin-registration-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-:host .admin-registration-actions button{width:auto;min-height:38px;padding:8px 14px;font-size:14px}
+:host .admin-registration-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border:1px solid #d9e2dd;background:#f8faf8;color:#1c2a30;min-width:0}
+:host .admin-registration-info{display:flex;align-items:center;gap:8px;min-width:0;flex:1}
+:host .admin-registration-name{flex:1;min-width:0;overflow-wrap:anywhere;font-weight:700;word-break:break-word}
+:host .admin-registration-actions{display:flex;align-items:flex-end;gap:8px;justify-content:flex-end;flex:1;min-width:0}
+:host .admin-registration-action-stack{display:flex;flex-direction:column;gap:8px;min-width:0}
+:host .admin-registration-action-pair{display:flex;gap:8px;min-width:0}
+:host .admin-registration-actions button{width:auto;min-height:38px;padding:8px 14px;font-size:14px;flex:0 0 auto}
 :host .admin-registration-actions .admin-registration-delete{border-color:#e7b7b7;color:#a42a2a;background:#fff7f7}
+:host .admin-registration-actions .admin-registration-checkin-btn{border-color:#3e8053;color:#dff9e8;background:#203a2a;min-width:0}
+:host .admin-registration-actions .admin-registration-cancel-checkin-btn{border-color:#b9705d;color:#a6422a;background:#fff2ef;min-width:0}
+:host .admin-registration-checkin{display:inline-block;color:#4fb679;font-size:12px;font-weight:800;letter-spacing:.04em;white-space:nowrap}
+:host .admin-registration-edit-box{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
 :host .admin-registration-input{flex:1;min-width:120px;max-width:440px}
-@media(max-width:600px){:host .admin-registration-row{flex-wrap:wrap;padding:12px}:host .admin-registration-name,:host .admin-registration-input{flex-basis:100%}:host .admin-registration-actions{width:100%}:host .admin-registration-actions button{flex:1}}
+@media(max-width:700px){
+  :host .admin-registration-row{display:flex;flex-direction:column;align-items:stretch;gap:10px;padding:12px}
+  :host .admin-registration-info,:host .admin-registration-edit-box{width:100%;flex-basis:100%}
+  :host .admin-registration-info{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  :host .admin-registration-name{flex:1;min-width:0}
+  :host .admin-registration-checkin{white-space:nowrap;margin-left:auto}
+  :host .admin-registration-actions{width:100%;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;align-items:stretch}
+  :host .admin-registration-action-stack{display:flex;min-width:0}
+  :host .admin-registration-action-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;min-width:0;grid-column:2 / span 2}
+  :host .admin-registration-actions button{width:100%;min-width:0;flex:1 1 auto}
+}
 
 /* Compact registration roster and pagination */
 :host .admin-registration-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
@@ -755,14 +772,18 @@
 :host .capacity-editor-actions button{width:auto;min-height:42px;padding:10px 14px}
 @media(max-width:600px){:host .capacity-editor-actions input{flex:1}:host .capacity-editor-actions button{flex:1}}
 
-/* Mobile roster: keep edit/delete buttons aligned to the right on one line */
+/* Mobile roster: name + status on top, then three equal-width action buttons */
 @media(max-width:760px){
   :host .admin-registration-list{grid-template-columns:minmax(0,1fr)}
-  :host .admin-registration-row{display:flex;flex-direction:row;flex-wrap:nowrap;align-items:center;justify-content:space-between;gap:10px;min-width:0;padding:12px}
-  :host .admin-registration-name{flex:1 1 auto;flex-basis:auto;min-width:0;overflow-wrap:anywhere}
-  :host .admin-registration-actions{display:flex;flex:0 0 auto;width:auto;min-width:0;flex-wrap:nowrap;align-items:center;justify-content:flex-end;gap:6px;margin-left:auto}
-  :host .admin-registration-actions button{display:inline-flex;flex:0 0 auto;width:auto;min-width:0;min-height:38px;padding:7px 10px;align-items:center;justify-content:center;white-space:nowrap;word-break:keep-all;font-size:13px;line-height:1.2}
-  :host .admin-registration-input{flex:1 1 auto;flex-basis:auto;min-width:0;width:0}
+  :host .admin-registration-row{display:flex;flex-direction:column;align-items:stretch;gap:10px;min-width:0;padding:12px}
+  :host .admin-registration-info{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;min-width:0;flex:1 1 auto}
+  :host .admin-registration-name{flex:1 1 auto;min-width:0;overflow-wrap:anywhere}
+  :host .admin-registration-checkin{margin-left:auto;white-space:nowrap}
+  :host .admin-registration-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));width:100%;gap:8px;min-width:0;flex:1 1 auto;align-items:stretch;justify-content:stretch}
+  :host .admin-registration-action-stack{display:flex;min-width:0}
+  :host .admin-registration-action-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;grid-column:2 / span 2;min-width:0}
+  :host .admin-registration-actions button{display:flex;align-items:center;justify-content:center;flex:1 1 auto;width:100%;min-width:0;min-height:38px;padding:8px 10px;white-space:nowrap;word-break:keep-all;font-size:13px;line-height:1.2}
+  :host .admin-registration-input{flex:1 1 auto;flex-basis:auto;min-width:0;width:100%}
 }
 @media(max-width:360px){:host .admin-registration-actions{gap:4px}:host .admin-registration-actions button{padding:7px 8px;font-size:12px}}
 
