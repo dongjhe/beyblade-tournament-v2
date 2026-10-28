@@ -4,8 +4,8 @@ import { getAuth, signInAnonymously, createUserWithEmailAndPassword, signInWithE
 import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, getFirestore, onSnapshot, query, where, serverTimestamp, setDoc, updateDoc, runTransaction, Unsubscribe } from 'firebase/firestore';
 
 export interface CloudRegistration { uid: string; name: string; ownerUid: string; }
-export type EventDetails = Pick<CloudEvent, 'title'|'mode'|'date'|'time'|'location'|'fee'|'notes'|'capacity'>;
-export interface CloudEvent { id:string; title:string; mode:'league'|'knockout'; open:boolean; date:string; time?:string; location:string; fee:number; notes:string; capacity:number; }
+export type EventDetails = Pick<CloudEvent, 'title'|'mode'|'date'|'time'|'registrationDeadline'|'location'|'fee'|'notes'|'capacity'>;
+export interface CloudEvent { id:string; title:string; mode:'league'|'knockout'; open:boolean; date:string; time?:string; registrationDeadline:string; fullAt?:number|null; location:string; fee:number; notes:string; capacity:number; registrationCount:number; }
 const app = initializeApp({
   apiKey: 'AIzaSyAPWrWFXHPyIWaS7xw7thwVwtgi4rZ4xTs',
   authDomain: 'beyblade-tournament-eeb50.firebaseapp.com',
@@ -17,6 +17,7 @@ const app = initializeApp({
 const auth = getAuth(app);
 const db = getFirestore(app);
 // First cloud MVP uses one shared registration event. Multi-event support comes next.
+function localDateString():string{const now=new Date();return now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0')}
 
 
 @Injectable({ providedIn: 'root' })
@@ -81,7 +82,8 @@ export class TournamentRegistrationService {
       id:item.id,title:String(item.data()['title']??''),
       mode:item.data()['mode']==='knockout'?'knockout' as const:'league' as const,
       open:item.data()['open']===true,date:String(item.data()['date']??''),time:String(item.data()['time']??''),
-      location:String(item.data()['location']??''),fee:Number(item.data()['fee']??0),notes:String(item.data()['notes']??''),capacity:Number(item.data()['capacity']??64)
+      registrationDeadline:String(item.data()['registrationDeadline']??''),fullAt:typeof item.data()['fullAt']==='number'?Number(item.data()['fullAt']):null,
+      location:String(item.data()['location']??''),fee:Number(item.data()['fee']??0),notes:String(item.data()['notes']??''),capacity:Number(item.data()['capacity']??64),registrationCount:Number(item.data()['registrationCount']??0)
     })).sort((a,b)=>a.date.localeCompare(b.date));
   }
   async listMyRegistrationHistory():Promise<{event:CloudEvent;players:{name:string;wins:number;losses:number;scored:number}[]}[]>{
@@ -116,20 +118,21 @@ export class TournamentRegistrationService {
     const user=auth.currentUser;
     if(!user||user.isAnonymous)return [];
     const snapshot=await getDocs(query(collection(db,'events'),where('ownerUid','==',user.uid)));
-    return snapshot.docs.filter(item=>item.data()['deleted']!==true).map(item=>({id:item.id,title:String(item.data()['title']??''),mode:item.data()['mode']==='knockout'?'knockout' as const:'league' as const,open:item.data()['open']===true,date:String(item.data()['date']??''),time:String(item.data()['time']??''),location:String(item.data()['location']??''),fee:Number(item.data()['fee']??0),notes:String(item.data()['notes']??''),capacity:Number(item.data()['capacity']??64)})).sort((a,b)=>a.title.localeCompare(b.title,'zh-Hant'));
+    return snapshot.docs.filter(item=>item.data()['deleted']!==true).map(item=>({id:item.id,title:String(item.data()['title']??''),mode:item.data()['mode']==='knockout'?'knockout' as const:'league' as const,open:item.data()['open']===true,date:String(item.data()['date']??''),time:String(item.data()['time']??''),registrationDeadline:String(item.data()['registrationDeadline']??''),fullAt:typeof item.data()['fullAt']==='number'?Number(item.data()['fullAt']):null,location:String(item.data()['location']??''),fee:Number(item.data()['fee']??0),notes:String(item.data()['notes']??''),capacity:Number(item.data()['capacity']??64),registrationCount:Number(item.data()['registrationCount']??0)})).sort((a,b)=>a.title.localeCompare(b.title,'zh-Hant'));
   }
-  async createEvent(title: string, mode: 'league' | 'knockout', date:string, location:string,fee:number,notes:string,capacity:number,time:string=''): Promise<string> {
+  async createEvent(title: string, mode: 'league' | 'knockout', date:string, location:string,fee:number,notes:string,capacity:number,time:string='',registrationDeadline:string=''): Promise<string> {
     const user = auth.currentUser;
     if(!user||user.isAnonymous)throw new Error('請先以管理者帳號登入');
     const eventRef = doc(collection(db, 'events'));
-    await setDoc(eventRef, { title, mode, date, time, location, fee, notes, capacity, registrationCount:0, ownerUid: user.uid, open: true, deleted:false, createdAt: serverTimestamp() });
+    await setDoc(eventRef, { title, mode, date, time, registrationDeadline, fullAt:null, location, fee, notes, capacity, registrationCount:0, ownerUid: user.uid, open: true, deleted:false, createdAt: serverTimestamp() });
     return eventRef.id;
   }
   async updateEventDetails(eventId:string, details:EventDetails):Promise<void>{
     const user=auth.currentUser;
     if(!user || user.isAnonymous || await this.getStaffRole()!=='admin')throw new Error('只有管理者可以修改報名表');
-    const title=details.title.trim(),location=details.location.trim(),time=details.time??'';
+    const title=details.title.trim(),location=details.location.trim(),time=details.time??'',registrationDeadline=details.registrationDeadline??'';
     if(!title || title.length>80 || !location || location.length>100 || !/^\d{4}-\d{2}-\d{2}$/.test(details.date)
+      || (registrationDeadline&&!/^\d{4}-\d{2}-\d{2}$/.test(registrationDeadline)) || (registrationDeadline&&registrationDeadline>details.date)
       || !/^$|^([01]\d|2[0-3]):[0-5]\d$/.test(time) || !['league','knockout'].includes(details.mode)
       || !Number.isSafeInteger(details.fee) || details.fee<0 || details.fee>1000000
       || details.notes.length>500 || !Number.isSafeInteger(details.capacity) || details.capacity<2 || details.capacity>64)
@@ -143,15 +146,15 @@ export class TournamentRegistrationService {
       if(details.capacity<Number(event.data()['registrationCount']??0))throw new Error('人數上限不能少於目前已報名人數');
       if(schedule.exists() && (details.mode!==event.data()['mode'] || details.capacity!==Number(event.data()['capacity']??64)))
         throw new Error('已產生賽程，無法修改賽制或人數上限');
-      tx.update(ref,{title,mode:details.mode,date:details.date,time,location,fee:details.fee,notes:details.notes.trim(),capacity:details.capacity});
+      tx.update(ref,{title,mode:details.mode,date:details.date,time,registrationDeadline,location,fee:details.fee,notes:details.notes.trim(),capacity:details.capacity});
     });
   }
-  async loadEvent(eventId: string): Promise<{title:string;mode:'league'|'knockout';open:boolean;ownerUid:string;date:string;time?:string;location:string;fee:number;notes:string;capacity:number}> {
+  async loadEvent(eventId: string): Promise<{title:string;mode:'league'|'knockout';open:boolean;ownerUid:string;date:string;time?:string;registrationDeadline:string;location:string;fee:number;notes:string;capacity:number}> {
     if(!auth.currentUser)await signInAnonymously(auth);
     const snap = await getDoc(doc(db, 'events', eventId));
     if (!snap.exists() || snap.data()['deleted']===true) throw new Error('找不到賽事或賽事已刪除');
     const data = snap.data();
-    return {title:String(data['title']),mode:data['mode']==='knockout'?'knockout':'league',open:data['open']===true,ownerUid:String(data['ownerUid']),date:String(data['date']??''),time:String(data['time']??''),location:String(data['location']??''),fee:Number(data['fee']??0),notes:String(data['notes']??''),capacity:Number(data['capacity']??64)};
+    return {title:String(data['title']),mode:data['mode']==='knockout'?'knockout':'league',open:data['open']===true,ownerUid:String(data['ownerUid']),date:String(data['date']??''),time:String(data['time']??''),registrationDeadline:String(data['registrationDeadline']??''),location:String(data['location']??''),fee:Number(data['fee']??0),notes:String(data['notes']??''),capacity:Number(data['capacity']??64)};
   }
   async setRegistrationOpen(open:boolean):Promise<void> {
     const user=auth.currentUser;
@@ -279,12 +282,14 @@ export class TournamentRegistrationService {
   async deleteRegistration(registrationId:string):Promise<void>{
     if(await this.getStaffRole()!=='admin')throw new Error('只有管理者可以刪除報名名單');
     const eventRef=doc(db,'events',this.eventId);const regRef=doc(db,'events',this.eventId,'registrations',registrationId);
-    await runTransaction(db,async tx=>{const event=await tx.get(eventRef);const reg=await tx.get(regRef);if(!reg.exists())return;tx.delete(regRef);if(event.exists()&&event.data()['registrationCount']!==undefined)tx.update(eventRef,{registrationCount:Math.max(0,Number(event.data()['registrationCount'])-1)});});
+    await runTransaction(db,async tx=>{const event=await tx.get(eventRef);const reg=await tx.get(regRef);if(!reg.exists())return;tx.delete(regRef);if(event.exists()&&event.data()['registrationCount']!==undefined)tx.update(eventRef,{registrationCount:Math.max(0,Number(event.data()['registrationCount'])-1),fullAt:null});});
   }
   async cancelMyRegistration(registrationId:string):Promise<void>{
     const user=auth.currentUser;if(!user)throw new Error('請先登入');
     const event=await getDoc(doc(db,'events',this.eventId));
     if(!event.exists()||event.data()?.['open']!==true||event.data()?.['deleted']===true)throw new Error('報名已截止，無法取消');
+    const deadline=String(event.data()?.['registrationDeadline']??'');
+    if(deadline&&localDateString()>deadline)throw new Error('報名已截止，無法取消');
     const ref=doc(db,'events',this.eventId,'registrations',registrationId);
     const registration=await getDoc(ref);
     if(!registration.exists()||registration.data()?.['uid']!==user.uid)throw new Error('只能取消自己的報名');
@@ -292,9 +297,11 @@ export class TournamentRegistrationService {
     await runTransaction(db,async tx=>{
       const event=await tx.get(eventRef);const record=await tx.get(ref);
       if(!event.exists()||event.data()['open']!==true||event.data()['deleted']===true)throw new Error('報名已截止');
+      const currentDeadline=String(event.data()['registrationDeadline']??'');
+      if(currentDeadline&&localDateString()>currentDeadline)throw new Error('報名已截止，無法取消');
       if(!record.exists()||record.data()['uid']!==user.uid)throw new Error('只能取消自己的報名');
       tx.delete(ref);
-      if(event.data()['registrationCount']!==undefined)tx.update(eventRef,{registrationCount:Math.max(0,Number(event.data()['registrationCount'])-1)});
+      if(event.data()['registrationCount']!==undefined)      tx.update(eventRef,{registrationCount:Math.max(0,Number(event.data()['registrationCount'])-1),fullAt:null});
     });
   }
   async register(name: string): Promise<void> {
@@ -305,13 +312,14 @@ export class TournamentRegistrationService {
     await runTransaction(db,async tx=>{
       const event=await tx.get(eventRef);
       if(!event.exists()||event.data()['deleted']===true||event.data()['open']!==true)throw new Error('報名已截止');
+      const registrationDeadline=String(event.data()['registrationDeadline']??'');
+      if(registrationDeadline&&localDateString()>registrationDeadline)throw new Error('報名已截止');
       const capacity=Number(event.data()['capacity']??64);
       if(event.data()['registrationCount']===undefined){tx.set(registrationRef,{name,uid:user.uid,createdAt:serverTimestamp()});return;}
       const count=Number(event.data()['registrationCount']);
       if(count>=capacity)throw new Error('報名已額滿');
       tx.set(registrationRef,{name,uid:user.uid,createdAt:serverTimestamp()});
-      tx.update(eventRef,{registrationCount:count+1});
+      tx.update(eventRef,{registrationCount:count+1,fullAt:count+1>=capacity?Date.now():null});
     });
   }
 }
-

@@ -42,7 +42,7 @@ service cloud.firestore {
       allow read: if request.auth != null;
 
       allow create: if isAdmin()
-        && request.resource.data.keys().hasOnly(['title', 'mode', 'date', 'time', 'location', 'fee', 'notes', 'capacity', 'registrationCount', 'ownerUid', 'open', 'deleted', 'createdAt'])
+        && request.resource.data.keys().hasOnly(['title', 'mode', 'date', 'time', 'registrationDeadline', 'fullAt', 'location', 'fee', 'notes', 'capacity', 'registrationCount', 'ownerUid', 'open', 'deleted', 'createdAt'])
         && request.resource.data.ownerUid == request.auth.uid
         && request.resource.data.title is string
         && request.resource.data.title.size() >= 1
@@ -52,6 +52,10 @@ service cloud.firestore {
         && request.resource.data.date.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
         && request.resource.data.get('time', '') is string
         && request.resource.data.get('time', '').matches('^$|^([01][0-9]|2[0-3]):[0-5][0-9]$')
+        && request.resource.data.get('registrationDeadline', '') is string
+        && request.resource.data.get('registrationDeadline', '').matches('^$|^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
+        && (request.resource.data.get('registrationDeadline', '') == '' || request.resource.data.get('registrationDeadline', '') <= request.resource.data.date)
+        && request.resource.data.get('fullAt', null) == null
         && request.resource.data.location is string
         && request.resource.data.location.size() >= 1
         && request.resource.data.location.size() <= 100
@@ -72,7 +76,7 @@ service cloud.firestore {
       allow update: if isAdmin()
         && resource.data.ownerUid == request.auth.uid
         && resource.data.get('deleted', false) == false
-        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['title','mode','date','time','location','fee','notes','capacity'])
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['title','mode','date','time','registrationDeadline','location','fee','notes','capacity'])
         && request.resource.data.title is string
         && request.resource.data.title.size() >= 1 && request.resource.data.title.size() <= 80
         && request.resource.data.mode in ['league','knockout']
@@ -80,6 +84,9 @@ service cloud.firestore {
         && request.resource.data.date.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
         && request.resource.data.get('time', '') is string
         && request.resource.data.get('time', '').matches('^$|^([01][0-9]|2[0-3]):[0-5][0-9]$')
+        && request.resource.data.get('registrationDeadline', '') is string
+        && request.resource.data.get('registrationDeadline', '').matches('^$|^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
+        && (request.resource.data.get('registrationDeadline', '') == '' || request.resource.data.get('registrationDeadline', '') <= request.resource.data.date)
         && request.resource.data.location is string
         && request.resource.data.location.size() >= 1 && request.resource.data.location.size() <= 100
         && request.resource.data.fee is int && request.resource.data.fee >= 0 && request.resource.data.fee <= 1000000
@@ -112,10 +119,11 @@ service cloud.firestore {
       allow update: if request.auth != null
         && resource.data.get('deleted', false) == false
         && resource.data.keys().hasAll(['capacity','registrationCount'])
-        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['registrationCount'])
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['registrationCount','fullAt'])
         && request.resource.data.registrationCount is int
         && request.resource.data.registrationCount >= 0
         && request.resource.data.registrationCount <= resource.data.capacity
+        && (request.resource.data.get('fullAt', null) == null || request.resource.data.fullAt is number)
         && (request.resource.data.registrationCount == resource.data.registrationCount + 1
           || request.resource.data.registrationCount == resource.data.registrationCount - 1)
         && (request.resource.data.registrationCount < resource.data.registrationCount
