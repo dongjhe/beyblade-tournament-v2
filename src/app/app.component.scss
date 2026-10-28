@@ -1277,6 +1277,38 @@
 .public-admin-bracket .bracket-player.pending > span:first-child{color:#8797a6!important;-webkit-text-fill-color:#8797a6!important}
 .site-nav.auth-pending button{visibility:hidden}
 
+.bracket .connector,.bracket .connector:after,
+.bracket-round:not(:first-child) .bracket-match:before,
+.semifinal-source .bracket-list:after{
+  background:#ffd83d!important;
+  box-shadow:0 0 7px #ffd83d66;
+}
+.semifinal-source .connector:after,
+.placement-bracket-round .connector:after,
+.championship-bracket-round .connector:after{display:none}
+.semifinal-source .bracket-list{position:relative}
+.semifinal-source .bracket-list:after{content:'';position:absolute;right:0;top:25%;bottom:25%;width:1px}
+.placement-bracket-round .bracket-match{margin-left:12px;margin-right:54px}
+.placement-bracket-round .bracket-match:before{z-index:1}
+.placement-match{margin-top:24px;padding-top:0;border:0}
+.final-placements{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;width:100%;max-width:900px;margin:30px auto 0;padding:0;border:0}
+.final-placements h4{margin:0 0 14px;color:#ffd83d;text-align:center}
+.final-placements h4{grid-column:1/-1}
+.final-placement-card{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;min-width:0;min-height:150px;padding:18px 12px;border:1px solid transparent;background:transparent;box-shadow:none;text-align:center}
+.final-placement-rank{display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:#343831;color:#f5f1e8;font-size:20px;font-weight:950}
+.final-placement-label{color:#c6c7bc;font-size:13px;font-weight:800}
+.final-placement-card>span:last-child{color:#292d29;font-size:18px;font-weight:900;overflow-wrap:anywhere}
+.final-placement-card.rank-first{border-color:transparent;background:transparent}
+.rank-first .final-placement-rank{background:#ffd83d;color:#1d2729}
+.rank-first .final-placement-label{color:#ffd83d}
+.rank-second .final-placement-rank{background:#c9cdd0;color:#222}
+.rank-third .final-placement-rank{background:#b97843;color:#fff}
+.final-placement-card .placement-pending{color:#62675f!important;font-weight:600!important}
+@media(max-width:760px){
+  .final-placements{grid-template-columns:repeat(2,minmax(0,1fr));max-width:560px}
+  .final-placement-card{min-height:120px}
+}
+
 /* Member history rows use the same two-column layout as public event rows. */
 .site-member .site-event-row{
   display:grid;
