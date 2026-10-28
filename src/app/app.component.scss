@@ -1395,6 +1395,16 @@
   .event-datetime-inputs{grid-template-columns:minmax(0,1fr);gap:10px}
 }
 
+:host .first-round-avoidance{margin:18px 0}
+:host .first-round-avoidance>label{display:block;margin-bottom:8px;font-weight:700}
+:host .first-round-avoidance details{border:1px solid #cbd5cf;border-radius:8px;background:#fff}
+:host .first-round-avoidance summary{padding:12px 14px;cursor:pointer;font-weight:700;color:#20302d}
+:host .first-round-avoidance details>p{margin:0;padding:0 14px 10px}
+:host .first-round-avoidance-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:4px;padding:0 10px 10px}
+:host .first-round-avoidance-option{display:flex;align-items:center;gap:9px;padding:8px;border-radius:6px;cursor:pointer;color:#20302d}
+:host .first-round-avoidance-option:hover{background:#f1f5f2}
+:host .first-round-avoidance-option input{width:18px;min-width:18px;height:18px;min-height:0;margin:0;accent-color:#b7ed39}
+:host .first-round-avoidance-option input:disabled+span{opacity:.5}
 
 .event-edit-form { margin-top:24px; padding-top:20px; border-top:1px solid #cbd5e1;
   fieldset { border:0; padding:0; margin:0; min-width:0; display:grid; gap:16px; }

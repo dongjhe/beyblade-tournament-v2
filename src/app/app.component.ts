@@ -10,7 +10,7 @@ interface Match{id:number;round:number;a:string|null;b:string|null;sa:number|nul
 @Component({selector:'app-root',standalone:true,imports:[CommonModule,FormsModule],templateUrl:'./app.component.html',styleUrl:'./app.component.scss'})
 export class AppComponent{
  @ViewChild('cameraPreview') cameraPreview?:ElementRef<HTMLVideoElement>;
- title='戰鬥陀螺挑戰賽';count=5;mode:Mode='league';knockoutView:KnockoutView='matches';names:string[]=[];players:string[]=[];matches:Match[]=[];started=false;error='';battleMatch:Match|null=null;battleSidesSwapped=false;battleRound=1;launchFails={a:0,b:0};countdownPlaying=false;recording=false;recordingPaused=false;recordingModeOpen=false;cameraReady=false;recordingUrl='';cameraError='';battleInfoOpen=false;private recordingOverlay?:HTMLElement;private toolbarGuard=document.addEventListener('click',event=>{const target=event.target as HTMLElement;if(target.closest('.toolbar-countdown')){event.preventDefault();event.stopImmediatePropagation();this.zone.run(()=>this.recording?this.stopRecording():this.openRecordingMode())}else if(target.closest('.video-pause-btn')){event.preventDefault();event.stopImmediatePropagation();this.zone.run(()=>this.showBattleInfoDialog())}},true);private countdownAudio?:HTMLAudioElement;private cameraStream?:MediaStream;private mediaRecorder?:MediaRecorder;private recordedChunks:Blob[]=[];private readonly storageKey='beybladeTournamentAngularV1';
+ title='戰鬥陀螺挑戰賽';count=5;mode:Mode='league';knockoutView:KnockoutView='matches';names:string[]=[];players:string[]=[];matches:Match[]=[];started=false;error='';avoidFirstRoundIndices:number[]=[];battleMatch:Match|null=null;battleSidesSwapped=false;battleRound=1;launchFails={a:0,b:0};countdownPlaying=false;recording=false;recordingPaused=false;recordingModeOpen=false;cameraReady=false;recordingUrl='';cameraError='';battleInfoOpen=false;private recordingOverlay?:HTMLElement;private toolbarGuard=document.addEventListener('click',event=>{const target=event.target as HTMLElement;if(target.closest('.toolbar-countdown')){event.preventDefault();event.stopImmediatePropagation();this.zone.run(()=>this.recording?this.stopRecording():this.openRecordingMode())}else if(target.closest('.video-pause-btn')){event.preventDefault();event.stopImmediatePropagation();this.zone.run(()=>this.showBattleInfoDialog())}},true);private countdownAudio?:HTMLAudioElement;private cameraStream?:MediaStream;private mediaRecorder?:MediaRecorder;private recordedChunks:Blob[]=[];private readonly storageKey='beybladeTournamentAngularV1';
  constructor(private zone:NgZone,private cdr:ChangeDetectorRef,private cloudRegistration:TournamentRegistrationService){this.cloudRegistration.onAuthChanged(user=>{this.zone.run(()=>{this.staffEmail=user?.isAnonymous?'':user?.email??'';this.staffSignedIn=!!user&&!user.isAnonymous;void this.refreshStaffRole()})});this.resizeNames();this.restore();void this.initializeRegistrationEvent();window.addEventListener('battle-recording-toggle',()=>this.zone.run(()=>this.recording?this.stopRecording():this.openRecordingMode()));window.addEventListener('battle-info-toggle',()=>this.zone.run(()=>this.showBattleInfoDialog()));document.addEventListener('click',event=>{const target=event.target as HTMLElement;if(target.closest('.toolbar-countdown')&&this.recording){event.preventDefault();event.stopImmediatePropagation();this.zone.run(()=>this.stopRecording())}if(target.closest('.video-pause-btn')){event.preventDefault();event.stopImmediatePropagation();this.zone.run(()=>this.showBattleInfoDialog())}},true)} newEventTitle='';newEventDate='';newEventTime='';newEventLocation='';newEventFee=0;newEventNotes='';newEventCapacity=16;newEventMode:Mode='league';newCreatedEventLink='';newCreatedEventQrCode='';
  organizerTab:'schedule'|'roster'|'forms'|'history'|'accounts'='schedule';exportBusy=false;
  sitePage:'home'|'events'|'login'|'member'|'admin'|'judge'=this.initialSitePage();
@@ -547,13 +547,70 @@ judgeAssignedEventIds:string[]=[];judgeAssignmentBusy=false;judgeAssignmentMessa
    if(this.started)return;
    const names=this.registeredNames;
    if(names.length<2){this.registrationMessage='至少需要 2 位參賽者才能建立賽事';return}
-   this.count=names.length;this.resizeNames();this.names=[...names];
+   this.count=names.length;this.resizeNames();this.names=[...names];this.avoidFirstRoundIndices=[];
    this.registrationMessage='已匯入 '+names.length+' 位選手，請確認後產生對戰組合';
  }
- resizeNames(){const n=Math.max(2,Math.min(64,Number(this.count)||2));this.count=n;this.names=Array.from({length:n},(_,i)=>this.names[i]??'')} trackByIndex(index:number){return index} setMode(mode:Mode){this.mode=mode} setKnockoutView(view:KnockoutView){this.knockoutView=view} demo(){const d=['小明','小華','阿哲','小宇','小凱','小杰','小安','小翔'];this.names=this.names.map((_,i)=>d[i]??`選手${i+1}`)}
- private shuffle<T>(items:T[]):T[]{const a=[...items];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a} start(){if(this.matches.length){this.resumeSchedule();return}const p=this.names.map(x=>x.trim());if(p.some(x=>!x)){this.error='請輸入所有選手名稱';return}if(new Set(p).size!==p.length){this.error='選手名稱不可重複';return}this.error='';this.players=this.shuffle(p);this.matches=[];this.knockoutView='matches';this.mode==='league'?this.makeLeague():this.makeKnockout();this.started=true;this.save()}
+ resizeNames(){const n=Math.max(2,Math.min(64,Number(this.count)||2));this.count=n;this.names=Array.from({length:n},(_,i)=>this.names[i]??'');this.avoidFirstRoundIndices=this.avoidFirstRoundIndices.filter(i=>i<n)}
+ get firstRoundAvoidanceLimit():number{return Math.floor(this.nextPow2(this.names.length)/2)}
+ toggleFirstRoundAvoidance(index:number,checked:boolean):void{
+   if(checked){
+     if(this.avoidFirstRoundIndices.length>=this.firstRoundAvoidanceLimit)return;
+     if(!this.avoidFirstRoundIndices.includes(index))this.avoidFirstRoundIndices=[...this.avoidFirstRoundIndices,index];
+   }else{
+     this.avoidFirstRoundIndices=this.avoidFirstRoundIndices.filter(i=>i!==index);
+   }
+ }
+ trackByIndex(index:number){return index} setMode(mode:Mode){this.mode=mode} setKnockoutView(view:KnockoutView){this.knockoutView=view} demo(){const d=['小明','小華','阿哲','小宇','小凱','小杰','小安','小翔'];this.names=this.names.map((_,i)=>d[i]??`選手${i+1}`)}
+ private shuffle<T>(items:T[]):T[]{const a=[...items];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+ start(){
+   if(this.matches.length){this.resumeSchedule();return}
+   const p=this.names.map(x=>x.trim());
+   if(p.some(x=>!x)){this.error='請輸入所有選手名稱';return}
+   if(new Set(p).size!==p.length){this.error='選手名稱不可重複';return}
+   if(this.mode==='knockout'&&this.avoidFirstRoundIndices.length>this.firstRoundAvoidanceLimit){this.error=`第一輪最多可選 ${this.firstRoundAvoidanceLimit} 位避免互相對戰`;return}
+   this.error='';
+   this.players=this.shuffle(p);
+   this.matches=[];
+   this.knockoutView='matches';
+   if(this.mode==='league')this.makeLeague();
+   else this.makeKnockout(this.avoidFirstRoundIndices.map(index=>p[index]).filter((name):name is string=>!!name));
+   this.started=true;
+   this.save();
+ }
  private makeLeague(){let id=0;const pool:Match[]=[];for(let i=0;i<this.players.length;i++)for(let j=i+1;j<this.players.length;j++)pool.push({id:id++,round:1,a:this.players[i],b:this.players[j],sa:null,sb:null,battleRound:1});this.matches=this.buildRestFriendlySchedule(pool).map((m,i)=>({...m,id:i}))} private buildRestFriendlySchedule(source:Match[]):Match[]{const remaining=this.shuffle(source),result:Match[]=[],lastPlayed=new Map<string,number>();while(remaining.length){const currentIndex=result.length;let bestGap=-1,candidates:number[]=[];for(let i=0;i<remaining.length;i++){const m=remaining[i],aLast=m.a?lastPlayed.get(m.a):-Infinity,bLast=m.b?lastPlayed.get(m.b):-Infinity,aGap=aLast===undefined?Infinity:currentIndex-aLast-1,bGap=bLast===undefined?Infinity:currentIndex-bLast-1,gap=Math.min(aGap,bGap);if(gap>bestGap){bestGap=gap;candidates=[i]}else if(gap===bestGap)candidates.push(i)}const pick=candidates[Math.floor(Math.random()*candidates.length)],[m]=remaining.splice(pick,1);result.push(m);if(m.a)lastPlayed.set(m.a,currentIndex);if(m.b)lastPlayed.set(m.b,currentIndex)}return result}
- private makeKnockout(){const size=this.nextPow2(this.players.length),seeded:(string|null)[]=[...this.players];while(seeded.length<size)seeded.push(null);const draw=this.shuffle(seeded);for(let i=0;i<size;i+=2)this.matches.push({id:this.matches.length,round:1,a:draw[i],b:draw[i+1],sa:null,sb:null,battleRound:1});this.buildNextRounds()} private nextPow2(n:number){let x=1;while(x<n)x*=2;return x}
+ private makeKnockout(avoidFirstRoundNames:string[]=[]){
+   const size=this.nextPow2(this.players.length);
+   const avoidSet=new Set(avoidFirstRoundNames);
+   const avoidPlayers=this.shuffle(this.players.filter(player=>avoidSet.has(player)));
+   const opponentPool:(string|null)[]=[
+     ...this.shuffle(this.players.filter(player=>!avoidSet.has(player))),
+     ...Array<string|null>(size-this.players.length).fill(null)
+   ];
+   const pairs:(string|null)[][]=[];
+   for(const player of avoidPlayers)pairs.push(this.shuffle([player,opponentPool.shift()??null]));
+   while(opponentPool.length){
+     const a=opponentPool.shift()??null;
+     const b=opponentPool.shift()??null;
+     pairs.push(this.shuffle([a,b]));
+   }
+   let orderedPairs=pairs;
+   if(size>=4){
+     const avoidedPairs=this.shuffle(pairs.filter(pair=>pair.some(player=>player!==null&&avoidSet.has(player))));
+     const otherPairs=this.shuffle(pairs.filter(pair=>!pair.some(player=>player!==null&&avoidSet.has(player))));
+     const roundTwoGroups:(string|null)[][][] = Array.from({length:size/4},()=>[]);
+     for(let i=0;i<roundTwoGroups.length&&avoidedPairs.length;i++)roundTwoGroups[i].push(avoidedPairs.shift()!);
+     while(avoidedPairs.length){
+       const group=roundTwoGroups.reduce((leastLoaded,current,index)=>current.length<leastLoaded.group.length?{group:current,index}:leastLoaded,{group:roundTwoGroups[0],index:0});
+       group.group.push(avoidedPairs.shift()!);
+     }
+     for(const group of roundTwoGroups)while(group.length<2&&otherPairs.length)group.push(otherPairs.shift()!);
+     orderedPairs=this.shuffle(roundTwoGroups).flatMap(group=>this.shuffle(group));
+   }else{
+     orderedPairs=this.shuffle(pairs);
+   }
+   for(const [a,b] of orderedPairs)this.matches.push({id:this.matches.length,round:1,a,b,sa:null,sb:null,battleRound:1});
+   this.buildNextRounds();
+ } private nextPow2(n:number){let x=1;while(x<n)x*=2;return x}
  openBattle(m:Match){if(!m.a||!m.b)return;this.pendingBattleAnchorId=null;this.battleSidesSwapped=false;if(m.sa===null)m.sa=0;if(m.sb===null)m.sb=0;this.battleMatch=m;this.battleRound=m.battleRound??1;this.resetLaunchFails();this.cameraError='';this.matches=[...this.matches];this.save()} closeBattle(){this.countdownAudio?.pause();this.countdownPlaying=false;this.stopRecording();this.stopCamera();if(this.battleMatch){this.battleMatch.battleRound=this.battleRound;this.save()}const anchorMatch=this.battleMatch;this.battleMatch=null;this.battleSidesSwapped=false;this.resetLaunchFails();if(anchorMatch&&this.staffRole!=='judge'){this.scrollToBattleMatch(this.pendingBattleAnchorId??anchorMatch.id);this.pendingBattleAnchorId=null}} private pendingBattleAnchorId:number|null=null; private scrollToBattleMatch(matchId:number){setTimeout(()=>{const row=document.getElementById('battle-match-'+matchId);row?.scrollIntoView({behavior:'smooth',block:'center'});},80)} swapBattleSides(){if(this.judgeMatchBusy)return;this.battleSidesSwapped=!this.battleSidesSwapped;this.refreshRecordingScoreboard();this.cdr.detectChanges()}
  displayedBattleSide(side:'a'|'b'):'a'|'b'{return this.battleSidesSwapped?(side==='a'?'b':'a'):side}
  displayedBattleName(side:'a'|'b'){return this.battleMatch?.[this.displayedBattleSide(side)]??''}
